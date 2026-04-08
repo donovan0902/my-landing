@@ -110,6 +110,25 @@ const wordGap = '\n\n'
 const targetRowCount = 8
 const animationIntervalMs = 120
 const switchHoldTicks = 4
+const themeStorageKey = 'theme'
+
+function getPreferredTheme() {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  const storedTheme = window.localStorage.getItem(themeStorageKey)
+
+  if (storedTheme === 'dark') {
+    return true
+  }
+
+  if (storedTheme === 'light') {
+    return false
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
 
 function getNoiseSeed(
   tick: number,
@@ -253,6 +272,7 @@ function renderWordmark(text: string, tick: number) {
 
 function App() {
   const [animationTick, setAnimationTick] = useState(0)
+  const [isDark, setIsDark] = useState(getPreferredTheme)
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
@@ -274,10 +294,50 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    const root = document.documentElement
+
+    root.classList.toggle('dark', isDark)
+    window.localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light')
+  }, [isDark])
+
   const asciiName = renderWordmark(name, animationTick)
 
   return (
     <main className="landing">
+      <button
+        type="button"
+        className="theme-toggle"
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        aria-pressed={isDark}
+        onClick={() => {
+          setIsDark((currentTheme) => !currentTheme)
+        }}
+      >
+        <span className="theme-toggle__icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            className="theme-toggle__glyph"
+            role="presentation"
+          >
+            <circle className="theme-toggle__sun" cx="12" cy="12" r="4.25" />
+            <path
+              className="theme-toggle__moon"
+              d="M14.8 4.7a7.5 7.5 0 1 0 4.5 13.6 8.4 8.4 0 1 1-4.5-13.6Z"
+            />
+            <g className="theme-toggle__rays">
+              <path d="M12 2.25v2.1" />
+              <path d="M12 19.65v2.1" />
+              <path d="M2.25 12h2.1" />
+              <path d="M19.65 12h2.1" />
+              <path d="m5.1 5.1 1.48 1.48" />
+              <path d="m17.42 17.42 1.48 1.48" />
+              <path d="m5.1 18.9 1.48-1.48" />
+              <path d="m17.42 6.58 1.48-1.48" />
+            </g>
+          </svg>
+        </span>
+      </button>
       <section className="hero" aria-labelledby="hero-title">
         <h1 id="hero-title" className="sr-only">
           Donovan Liao
