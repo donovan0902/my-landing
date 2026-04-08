@@ -1,120 +1,290 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { startTransition, useEffect, useEffectEvent, useState } from 'react'
 import './App.css'
 
+const glyphs: Record<string, string[]> = {
+  A: [
+    '000111000',
+    '001111100',
+    '011000110',
+    '011000110',
+    '011000110',
+    '011111110',
+    '011111110',
+    '011000110',
+    '011000110',
+    '011000110',
+    '011000110',
+  ],
+  D: [
+    '111110000',
+    '111111000',
+    '110001100',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110001100',
+    '111111000',
+    '111110000',
+  ],
+  I: [
+    '111111111',
+    '111111111',
+    '000111000',
+    '000111000',
+    '000111000',
+    '000111000',
+    '000111000',
+    '000111000',
+    '000111000',
+    '111111111',
+    '111111111',
+  ],
+  L: [
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '110000000',
+    '111111111',
+    '111111111',
+  ],
+  N: [
+    '110000110',
+    '111000110',
+    '111100110',
+    '111110110',
+    '110111110',
+    '110011110',
+    '110001110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+  ],
+  O: [
+    '001111000',
+    '011111100',
+    '110001110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110001110',
+    '011111100',
+    '001111000',
+  ],
+  V: [
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '110000110',
+    '011001100',
+    '011001100',
+    '001111000',
+    '001111000',
+    '000110000',
+  ],
+}
+
+const densityBands = [
+  ['.', '`', "'", ','],
+  [':', ';', '~'],
+  ['-', '=', '_'],
+  ['+', '*', 'x'],
+  ['#', '%', '&'],
+  ['@', '8', '$', '0', '9'],
+] as const
+
+const name = 'DONOVAN LIAO'
+const letterGap = ' '
+const wordGap = '\n\n'
+const targetRowCount = 8
+const animationIntervalMs = 120
+const switchHoldTicks = 4
+
+function getNoiseSeed(
+  tick: number,
+  rowIndex: number,
+  globalOffset: number,
+  columnIndex: number,
+  wordIndex: number,
+) {
+  return (
+    Math.imul(tick + 1, 2654435761) ^
+    Math.imul(rowIndex + 1, 2246822519) ^
+    Math.imul(globalOffset + columnIndex + 1, 3266489917) ^
+    Math.imul(wordIndex + 1, 668265263)
+  ) >>> 0
+}
+
+function hasFilledPixel(glyph: string[], rowIndex: number, columnIndex: number) {
+  if (rowIndex < 0 || rowIndex >= glyph.length) {
+    return false
+  }
+
+  if (columnIndex < 0 || columnIndex >= glyph[rowIndex].length) {
+    return false
+  }
+
+  return glyph[rowIndex][columnIndex] === '1'
+}
+
+function countFilledNeighbors(
+  glyph: string[],
+  rowIndex: number,
+  columnIndex: number,
+) {
+  let count = 0
+
+  for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
+    for (let columnOffset = -1; columnOffset <= 1; columnOffset += 1) {
+      if (rowOffset === 0 && columnOffset === 0) {
+        continue
+      }
+
+      if (hasFilledPixel(glyph, rowIndex + rowOffset, columnIndex + columnOffset)) {
+        count += 1
+      }
+    }
+  }
+
+  return count
+}
+
+function getShadeBandIndex(glyph: string[], rowIndex: number, columnIndex: number) {
+  const filledNeighbors = countFilledNeighbors(glyph, rowIndex, columnIndex)
+  const topOpen = Number(!hasFilledPixel(glyph, rowIndex - 1, columnIndex))
+  const leftOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex - 1))
+  const bottomOpen = Number(!hasFilledPixel(glyph, rowIndex + 1, columnIndex))
+  const rightOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex + 1))
+  const lightBias = topOpen + leftOpen - bottomOpen - rightOpen
+  const weightedDensity = Math.max(0, Math.min(8, filledNeighbors - lightBias))
+
+  return Math.round((weightedDensity / 8) * (densityBands.length - 1))
+}
+
+function getAnimatedCharacter(
+  shadeBandIndex: number,
+  tick: number,
+  rowIndex: number,
+  globalOffset: number,
+  columnIndex: number,
+  wordIndex: number,
+) {
+  const pool = densityBands[shadeBandIndex]
+  const baseIndex =
+    getNoiseSeed(0, rowIndex, globalOffset, columnIndex, wordIndex) % pool.length
+
+  const stateSeed = getNoiseSeed(
+    1,
+    rowIndex,
+    globalOffset,
+    columnIndex,
+    wordIndex,
+  )
+  const phaseOffset = stateSeed % (switchHoldTicks * pool.length)
+  const stateStep = Math.floor((tick + phaseOffset) / switchHoldTicks) % pool.length
+
+  return pool[(baseIndex + stateStep) % pool.length]
+}
+
+function renderWordmark(text: string, tick: number) {
+  const words = text.split(' ').filter(Boolean)
+
+  return words
+    .map((word, wordIndex) => {
+      const rows: string[] = []
+      const sourceRowCount = glyphs[word[0]].length
+
+      for (let rowIndex = 0; rowIndex < targetRowCount; rowIndex += 1) {
+        const sourceRowIndex = Math.round(
+          (rowIndex * (sourceRowCount - 1)) / (targetRowCount - 1),
+        )
+
+        const line = word
+          .split('')
+          .map((letter, letterIndex) => {
+            const glyph = glyphs[letter]
+            const glyphWidth = glyph[sourceRowIndex].length
+            const globalOffset = letterIndex * (glyphWidth + letterGap.length)
+
+            return glyph[sourceRowIndex]
+              .split('')
+              .map((pixel, columnIndex) => {
+                if (pixel === '0') {
+                  return ' '
+                }
+
+                const shadeBandIndex = getShadeBandIndex(
+                  glyph,
+                  sourceRowIndex,
+                  columnIndex,
+                )
+
+                return getAnimatedCharacter(
+                  shadeBandIndex,
+                  tick,
+                  rowIndex,
+                  globalOffset,
+                  columnIndex,
+                  wordIndex,
+                )
+              })
+              .join('')
+          })
+          .join(letterGap)
+
+        rows.push(line)
+      }
+
+      return rows.join('\n')
+    })
+    .join(wordGap)
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [animationTick, setAnimationTick] = useState(0)
+
+  const advanceBrush = useEffectEvent(() => {
+    startTransition(() => {
+      setAnimationTick((tick) => tick + 1)
+    })
+  })
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined
+    }
+
+    const intervalId = window.setInterval(() => {
+      advanceBrush()
+    }, animationIntervalMs)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [])
+
+  const asciiName = renderWordmark(name, animationTick)
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main className="landing">
+      <section className="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title" className="sr-only">
+          Donovan Liao
+        </h1>
+        <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 
