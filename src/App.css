@@ -8,6 +8,7 @@
 
 .hero {
   max-width: 100%;
+  width: min(100%, 72rem);
 }
 
 .theme-toggle {
@@ -117,6 +118,71 @@
   display: none;
 }
 
+.project-directory {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  width: min(100%, 32rem);
+  color: var(--ink);
+  font-family: var(--display-mono);
+}
+
+.project-directory__label {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.project-directory__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.project-directory__item {
+  margin: 0;
+}
+
+.project-directory__trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: default;
+  text-align: left;
+}
+
+.project-directory__trigger:hover {
+  opacity: 0.8;
+}
+
+.project-directory__trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.project-directory__caret {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.project-directory__caret {
+  transform: translateY(-0.02em);
+}
+
+.project-directory__name {
+  min-width: 0;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -137,5 +203,14 @@
   .theme-toggle {
     top: 1rem;
     right: 1rem;
+  }
+
+  .project-directory {
+    width: 100%;
+  }
+
+  .project-directory__trigger {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.45rem;
   }
 }
