@@ -111,6 +111,12 @@ const targetRowCount = 8
 const animationIntervalMs = 120
 const switchHoldTicks = 4
 const themeStorageKey = 'theme'
+const projectDirectories = [
+  'playground-system',
+  'editor-lab',
+  'motion-archive',
+  'neighborhood-club',
+] as const
 
 function getPreferredTheme() {
   if (typeof window === 'undefined') {
@@ -343,6 +349,25 @@ function App() {
           Donovan Liao
         </h1>
         <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
+        <div className="project-directory" aria-label="Projects">
+          <p className="project-directory__label">./projects</p>
+          <ul className="project-directory__list">
+            {projectDirectories.map((projectName) => (
+              <li key={projectName} className="project-directory__item">
+                <button
+                  type="button"
+                  className="project-directory__trigger"
+                  aria-expanded="false"
+                >
+                  <span className="project-directory__caret" aria-hidden="true">
+                    ▸
+                  </span>
+                  <span className="project-directory__name">{projectName}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
     </main>
   )
