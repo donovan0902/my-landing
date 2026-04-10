@@ -1,5 +1,32 @@
 import { startTransition, useEffect, useEffectEvent, useState } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import './App.css'
+
+type ProjectDirectory = {
+  name: string
+  description: string
+  demo:
+    | {
+        type: 'link'
+        label: string
+        href: string
+      }
+    | {
+        type: 'embed'
+        title: string
+        src: string
+      }
+    | {
+        type: 'text'
+        label: string
+      }
+  stack: string[]
+}
 
 const glyphs: Record<string, string[]> = {
   A: [
@@ -111,12 +138,51 @@ const targetRowCount = 8
 const animationIntervalMs = 120
 const switchHoldTicks = 4
 const themeStorageKey = 'theme'
-const projectDirectories = [
-  'playground-system',
-  'editor-lab',
-  'motion-archive',
-  'neighborhood-club',
-] as const
+const projectDirectories: ProjectDirectory[] = [
+  {
+    name: 'garden',
+    description:
+      'An internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally.',
+    demo: {
+      type: 'link',
+      label: 'projectgarden.dev',
+      href: 'https://projectgarden.dev',
+    },
+    stack: ['Next.js', 'Convex (self-hosted)', 'Amplify', 'Cognito'],
+  },
+  {
+    name: 'binder',
+    description:
+      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. The video below shows an example of a generated lesson plan.',
+    demo: {
+      type: 'embed',
+      title: 'Binder demo video',
+      src: 'https://www.youtube.com/embed/DtywpVV41R4?si=mhtxt9HYMTIzJ3Lu',
+    },
+    stack: ['Next.js', 'Supabase', 'Flask', 'LangGraph', 'Heroku'],
+  },
+  {
+    name: 'qard',
+    description:
+      'A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for automatic transaction routing.',
+    demo: {
+      type: 'link',
+      label: 'qard.dev',
+      href: 'https://qard.dev',
+    },
+    stack: ['Flutter', 'AWS Lambda', 'DynamoDB', 'GCP', 'Lithic'],
+  },
+  {
+    name: 'ips-hackathon-mvp',
+    description:
+      'A first-place hackathon prototype for indoor positioning that combined BLE, magnetometer, and ultrawideband sensor data to solve the Honda Challenge at HackOHI/O.',
+    demo: {
+      type: 'text',
+      label: 'Private / no public demo',
+    },
+    stack: ['BLE', 'Magnetometer', 'Ultrawideband', 'MVP Prototype'],
+  },
+]
 
 function getPreferredTheme() {
   if (typeof window === 'undefined') {
@@ -279,6 +345,7 @@ function renderWordmark(text: string, tick: number) {
 function App() {
   const [animationTick, setAnimationTick] = useState(0)
   const [isDark, setIsDark] = useState(getPreferredTheme)
+  const [expandedProject, setExpandedProject] = useState<string | null>(null)
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
@@ -350,23 +417,74 @@ function App() {
         </h1>
         <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
         <div className="project-directory" aria-label="Projects">
-          <p className="project-directory__label">./projects</p>
-          <ul className="project-directory__list">
-            {projectDirectories.map((projectName) => (
-              <li key={projectName} className="project-directory__item">
-                <button
-                  type="button"
-                  className="project-directory__trigger"
-                  aria-expanded="false"
-                >
+          <p className="project-directory__label">Projects</p>
+          <Accordion
+            type="single"
+            collapsible
+            className="project-directory__list"
+            value={expandedProject ?? undefined}
+            onValueChange={setExpandedProject}
+          >
+            {projectDirectories.map((project) => (
+              <AccordionItem
+                key={project.name}
+                value={project.name}
+                className="project-directory__item"
+              >
+                <AccordionTrigger className="project-directory__trigger">
                   <span className="project-directory__caret" aria-hidden="true">
-                    ▸
+                    {'>'}
                   </span>
-                  <span className="project-directory__name">{projectName}</span>
-                </button>
-              </li>
+                  <span className="project-directory__name">{project.name}</span>
+                </AccordionTrigger>
+                <AccordionContent className="project-directory__content">
+                  <div className="project-directory__panel">
+                    <dl className="project-directory__meta">
+                      <div className="project-directory__field">
+                        <dd className="project-directory__field-value">
+                          {project.description}
+                        </dd>
+                      </div>
+                      <div className="project-directory__field">
+                        <dd className="project-directory__field-value">
+                          {project.demo.type === 'link' ? (
+                            <a
+                              className="project-directory__demo"
+                              href={project.demo.href}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {project.demo.label}
+                            </a>
+                          ) : project.demo.type === 'embed' ? (
+                            <div className="project-directory__video-shell">
+                              <iframe
+                                className="project-directory__video"
+                                src={project.demo.src}
+                                title={project.demo.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                allowFullScreen
+                              />
+                            </div>
+                          ) : (
+                            <span className="project-directory__demo project-directory__demo--muted">
+                              {project.demo.label}
+                            </span>
+                          )}
+                        </dd>
+                      </div>
+                      <div className="project-directory__field">
+                        <dd className="project-directory__field-value">
+                          {project.stack.join(' / ')}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </ul>
+          </Accordion>
         </div>
       </section>
     </main>
