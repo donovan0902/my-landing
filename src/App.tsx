@@ -530,8 +530,9 @@ function App() {
         <h1 id="hero-title" className="sr-only">
           Donovan Liao
         </h1>
-        <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
-        <div className="project-directory" aria-label="Projects">
+        <div className="hero__left">
+          <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
+          <div className="project-directory" aria-label="Projects">
           <p className="project-directory__label">Projects</p>
           <Accordion
             type="single"
@@ -647,7 +648,28 @@ function App() {
               </AccordionItem>
             ))}
           </Accordion>
+          </div>
         </div>
+        <section
+          className="current-context"
+          aria-labelledby="current-context-title"
+        >
+          <h2 id="current-context-title" className="sr-only">
+            Current context
+          </h2>
+          <ul className="current-context__list">
+            <li className="current-context__item">
+              Currently implementing agentic automations for embedded systems
+              testing/simulation at Honda
+            </li>
+            <li className="current-context__item">
+              I like working at the intersection of product and software.
+            </li>
+            <li className="current-context__item">
+              I build in my free time outside of work.
+            </li>
+          </ul>
+        </section>
       </section>
     </main>
   )
