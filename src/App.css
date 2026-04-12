@@ -22,9 +22,9 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  /* Collapsed accordion bottom aligns with current-context bottom when intro column is taller */
+  /* Keep the projects block vertically centered against the left column. */
   .project-directory {
-    align-self: end;
+    align-self: center;
   }
 }
 
@@ -211,7 +211,7 @@
 }
 
 .project-directory__label {
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.9rem;
   font-family: 'Average', serif;
   font-size: clamp(1.4rem, 3vw, 1.85rem);
   font-style: normal;
