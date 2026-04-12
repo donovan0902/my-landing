@@ -12,7 +12,16 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 30rem);
   align-items: start;
-  gap: clamp(1.25rem, 3vw, 3rem);
+  gap: clamp(0.75rem, 1.8vw, 1.75rem);
+}
+
+/* Fixed column gap on wide layouts — clamp() often matched ~1.5–2rem before, so
+   tightening reads as “no change”. This pulls Projects clearly left vs intro. */
+@media (min-width: 769px) {
+  .hero {
+    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 34rem);
+  }
 }
 
 .hero__left {
@@ -158,15 +167,15 @@
 }
 
 .current-context {
-  width: min(100%, 34rem);
+  width: min(100%, 25rem);
   color: var(--ink);
   text-align: left;
 }
 
 .current-context__list {
   margin: 0;
-  padding-left: 1.1rem;
-  list-style-position: outside;
+  padding-left: 0;
+  list-style-position: inside;
   display: grid;
   gap: 0.45rem;
 }
@@ -184,6 +193,7 @@
 .project-directory {
   width: 100%;
   min-width: 0;
+  align-self: start;
   color: var(--ink);
   font-family: var(--display-mono);
   --project-directory-caret-width: 1ch;
@@ -191,11 +201,12 @@
 }
 
 .project-directory__label {
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.65rem;
   font-family: 'Average', serif;
   font-size: clamp(1.4rem, 3vw, 1.85rem);
   font-style: normal;
   font-weight: 400;
+  line-height: 1;
   opacity: 0.7;
 }
 
