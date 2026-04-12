@@ -10,7 +10,11 @@ import './App.css'
 type ProjectDirectory = {
   name: string
   description: string
-  demo:
+  descriptionSuffixLink?: {
+    label: string
+    href: string
+  }
+  demo?:
     | {
         type: 'link'
         label: string
@@ -142,14 +146,13 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: 'garden',
     description:
-      'An internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally.',
-    demo: {
-      type: 'link',
+      'Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally. Public facing demo w/mock data:',
+    descriptionSuffixLink: {
       label: 'projectgarden.dev',
       href: 'https://projectgarden.dev',
     },
     stack:
-      'Next.js, Convex: cloud -> self-hosted with Docker + EC2 (with RDS Postgres and S3) + Nginx, Vercel -> Amplify, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), ALB + WAF (network level restriction), AWS SES',
+      'Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), AWS RDS Postgres + S3, AWS SES, Convex Agents',
   },
   {
     name: 'binder',
@@ -441,43 +444,71 @@ function App() {
                 <AccordionContent className="project-directory__content">
                   <div className="project-directory__panel">
                     <dl className="project-directory__meta">
-                      <div className="project-directory__field">
-                        <dd className="project-directory__field-value">
+                      <div className="project-directory__field project-directory__field--description">
+                        <dd className="project-directory__field-value project-directory__field-value--description">
                           {project.description}
+                          {project.descriptionSuffixLink ? (
+                            <>
+                              {' '}
+                              <a
+                                className="project-directory__description-suffix-link"
+                                href={project.descriptionSuffixLink.href}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {project.descriptionSuffixLink.label}
+                              </a>
+                            </>
+                          ) : null}
                         </dd>
                       </div>
-                      <div className="project-directory__field">
+                      {project.demo ? (
+                        <div className="project-directory__field project-directory__field--demo">
+                          <dd className="project-directory__field-value project-directory__field-value--demo">
+                            {project.demo.type === 'link' ? (
+                              <a
+                                className="project-directory__demo"
+                                href={project.demo.href}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {project.demo.label}
+                              </a>
+                            ) : project.demo.type === 'embed' ? (
+                              <div className="project-directory__video-shell">
+                                <iframe
+                                  className="project-directory__video"
+                                  src={project.demo.src}
+                                  title={project.demo.title}
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerPolicy="strict-origin-when-cross-origin"
+                                  allowFullScreen
+                                />
+                              </div>
+                            ) : (
+                              <span className="project-directory__demo project-directory__demo--muted">
+                                {project.demo.label}
+                              </span>
+                            )}
+                          </dd>
+                        </div>
+                      ) : null}
+                      <div className="project-directory__field project-directory__field--stack">
                         <dd className="project-directory__field-value">
-                          {project.demo.type === 'link' ? (
-                            <a
-                              className="project-directory__demo"
-                              href={project.demo.href}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {project.demo.label}
-                            </a>
-                          ) : project.demo.type === 'embed' ? (
-                            <div className="project-directory__video-shell">
-                              <iframe
-                                className="project-directory__video"
-                                src={project.demo.src}
-                                title={project.demo.title}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerPolicy="strict-origin-when-cross-origin"
-                                allowFullScreen
-                              />
-                            </div>
-                          ) : (
-                            <span className="project-directory__demo project-directory__demo--muted">
-                              {project.demo.label}
-                            </span>
-                          )}
-                        </dd>
-                      </div>
-                      <div className="project-directory__field">
-                        <dd className="project-directory__field-value">
-                          {project.stack}
+                          <ul className="project-directory__stack-list">
+                            {project.stack
+                              .split(',')
+                              .map((item) => item.trim())
+                              .filter(Boolean)
+                              .map((item) => (
+                                <li
+                                  key={`${project.name}-${item}`}
+                                  className="project-directory__stack-item"
+                                >
+                                  {item}
+                                </li>
+                              ))}
+                          </ul>
                         </dd>
                       </div>
                     </dl>

@@ -123,12 +123,14 @@
   width: min(100%, 32rem);
   color: var(--ink);
   font-family: var(--display-mono);
+  --project-directory-caret-width: 1ch;
+  --project-directory-trigger-gap: 0.5rem;
 }
 
 .project-directory__label {
-  margin: 0 0 0.7rem;
+  margin: 0 0 0.85rem;
   font-family: 'Average', serif;
-  font-size: 1.25rem;
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
   font-style: normal;
   font-weight: 400;
   opacity: 0.7;
@@ -149,15 +151,17 @@
 .project-directory__trigger {
   width: 100%;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: var(--project-directory-caret-width) minmax(0, 1fr);
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--project-directory-trigger-gap);
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
   cursor: pointer;
   text-align: left;
+  opacity: 1;
+  transition: opacity 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .project-directory__trigger:hover {
@@ -170,6 +174,7 @@
 }
 
 .project-directory__caret {
+  width: var(--project-directory-caret-width);
   font-size: 0.9rem;
   opacity: 0.7;
   transition:
@@ -212,36 +217,110 @@
 }
 
 .project-directory__panel {
-  margin: 0.45rem 0 0 1.2rem;
+  margin: 0.45rem 0 0 calc(
+    var(--project-directory-caret-width) + var(--project-directory-trigger-gap)
+  );
 }
 
 .project-directory__meta {
   margin: 0;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.7rem;
 }
 
 .project-directory__field {
   display: grid;
-  gap: 0.18rem;
+  gap: 0.3rem;
+}
+
+.project-directory__field-label {
+  margin: 0;
+  font-family: var(--display-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.58;
 }
 
 .project-directory__field-value {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 350;
+}
+
+.project-directory__field-value--description {
+  font-family: 'Average', serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.project-directory__description-suffix-link {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  font-style: italic;
+  font-synthesis: style weight;
+  color: color-mix(in srgb, var(--ink) 100%, transparent);
+  text-decoration: none;
+  opacity: 1;
+  transition:
+    opacity 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-directory__description-suffix-link:hover {
+  opacity: 0.88;
+  color: color-mix(in srgb, var(--ink) 72%, var(--page-bg) 28%);
+}
+
+.project-directory__description-suffix-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.project-directory__field-value--demo {
+  font-family: 'Figtree Variable', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 450;
   line-height: 1.5;
 }
 
+.project-directory__stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-directory__stack-item {
+  padding: 0.22rem 0.48rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, var(--page-bg) 96%, var(--ink) 4%);
+  font-family: 'Figtree Variable', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 420;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
 .project-directory__demo {
-  color: inherit;
+  color: color-mix(in srgb, var(--ink) 100%, transparent);
+  font-family: 'Figtree Variable', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 450;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
+  opacity: 1;
+  transition:
+    opacity 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .project-directory__demo:hover {
-  opacity: 0.75;
+  opacity: 0.88;
+  color: color-mix(in srgb, var(--ink) 68%, var(--page-bg) 32%);
 }
 
 .project-directory__demo--muted {
@@ -317,11 +396,12 @@
   }
 
   .project-directory__trigger {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.45rem;
+    --project-directory-trigger-gap: 0.45rem;
   }
 
   .project-directory__panel {
-    margin-left: 0.95rem;
+    margin-left: calc(
+      var(--project-directory-caret-width) + var(--project-directory-trigger-gap)
+    );
   }
 }
