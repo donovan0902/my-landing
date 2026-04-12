@@ -194,7 +194,7 @@ const projectDirectories: ProjectDirectory[] = [
       href: 'https://projectgarden.dev',
     },
     stack:
-      'Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), AWS RDS Postgres + S3, AWS SES, Convex Agents',
+      'Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents',
   },
   {
     name: 'surveyhuman',
@@ -532,7 +532,28 @@ function App() {
         </h1>
         <div className="hero__left">
           <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
-          <div className="project-directory" aria-label="Projects">
+          <section
+            className="current-context"
+            aria-labelledby="current-context-title"
+          >
+            <h2 id="current-context-title" className="sr-only">
+              Current context
+            </h2>
+            <ul className="current-context__list">
+              <li className="current-context__item">
+                Currently implementing agentic automations for embedded systems
+                testing/simulation at Honda
+              </li>
+              <li className="current-context__item">
+                I like working at the intersection of product and software.
+              </li>
+              <li className="current-context__item">
+                I build in my free time outside of work. I also grapple and golf.
+              </li>
+            </ul>
+          </section>
+        </div>
+        <div className="project-directory" aria-label="Projects">
           <p className="project-directory__label">Projects</p>
           <Accordion
             type="single"
@@ -605,16 +626,14 @@ function App() {
                               </a>
                             ) : project.demo.type === 'embed' ? (
                               <div className="project-directory__video-shell">
-                                <iframe 
-                                  width="560" 
-                                  height="315" 
-                                  src="https://www.youtube.com/embed/2bw5VEtrB1I?si=0spXcA5GNt3qmCAN" 
-                                  title="YouTube video player" 
-                                  frameborder="0" 
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                  referrerpolicy="strict-origin-when-cross-origin" 
-                                  allowfullscreen>
-                                </iframe>
+                                <iframe
+                                  className="project-directory__video"
+                                  src="https://www.youtube.com/embed/2bw5VEtrB1I?si=0spXcA5GNt3qmCAN"
+                                  title="YouTube video player"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerPolicy="strict-origin-when-cross-origin"
+                                  allowFullScreen
+                                />
                               </div>
                             ) : (
                               <span className="project-directory__demo project-directory__demo--muted">
@@ -648,28 +667,7 @@ function App() {
               </AccordionItem>
             ))}
           </Accordion>
-          </div>
         </div>
-        <section
-          className="current-context"
-          aria-labelledby="current-context-title"
-        >
-          <h2 id="current-context-title" className="sr-only">
-            Current context
-          </h2>
-          <ul className="current-context__list">
-            <li className="current-context__item">
-              Currently implementing agentic automations for embedded systems
-              testing/simulation at Honda
-            </li>
-            <li className="current-context__item">
-              I like working at the intersection of product and software.
-            </li>
-            <li className="current-context__item">
-              I build in my free time outside of work.
-            </li>
-          </ul>
-        </section>
       </section>
     </main>
   )
