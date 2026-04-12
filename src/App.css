@@ -136,19 +136,35 @@
   width: 1.9rem;
   height: 1.35rem;
   overflow: visible;
+  --theme-toggle-light-bg: #eef3f8;
+  --theme-toggle-dark-bg: #1d2a3b;
+  --theme-toggle-light-overlay: color-mix(in srgb, black 8%, transparent);
+  --theme-toggle-dark-overlay: color-mix(in srgb, white 18%, transparent);
 }
 
 .theme-toggle__block {
-  transition:
-    fill 160ms ease;
+  transition: fill 160ms ease;
 }
 
 .theme-toggle__block--light {
-  fill: #d4d4d8;
+  fill: var(--theme-toggle-light-bg);
 }
 
 .theme-toggle__block--dark {
-  fill: #3f3f46;
+  fill: var(--theme-toggle-dark-bg);
+}
+
+.theme-toggle__overlay {
+  pointer-events: none;
+  transition: fill 160ms ease;
+}
+
+.theme-toggle__overlay--light {
+  fill: var(--theme-toggle-light-overlay);
+}
+
+.theme-toggle__overlay--dark {
+  fill: var(--theme-toggle-dark-overlay);
 }
 
 .name-mark {

@@ -561,7 +561,23 @@ function App() {
               rx="3"
             />
             <rect
+              className="theme-toggle__overlay theme-toggle__overlay--light"
+              x="2"
+              y="4"
+              width="14"
+              height="12"
+              rx="3"
+            />
+            <rect
               className="theme-toggle__block theme-toggle__block--dark"
+              x="12"
+              y="2"
+              width="14"
+              height="12"
+              rx="3"
+            />
+            <rect
+              className="theme-toggle__overlay theme-toggle__overlay--dark"
               x="12"
               y="2"
               width="14"
