@@ -5,10 +5,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import githubIconBlack from './assets/GitHub_Invertocat_Black.png'
+import githubIconWhite from './assets/GitHub_Invertocat_White.png'
 import './App.css'
 
 type ProjectDirectory = {
   name: string
+  repoHref?: string
   description: string
   descriptionSuffixLink?: {
     label: string
@@ -145,6 +148,7 @@ const themeStorageKey = 'theme'
 const projectDirectories: ProjectDirectory[] = [
   {
     name: 'garden',
+    repoHref: 'https://github.com/donovan0902/project-hunt',
     description:
       'Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally. Public facing demo w/mock data:',
     descriptionSuffixLink: {
@@ -155,9 +159,31 @@ const projectDirectories: ProjectDirectory[] = [
       'Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), AWS RDS Postgres + S3, AWS SES, Convex Agents',
   },
   {
+    name: 'surveyhuman',
+    repoHref: 'https://github.com/donovan0902/survey-human',
+    description:
+      'Weekend prototype I built after getting frustrated with employee engagement surveys that asked personal questions and reduced the answers to a 1-5 score. Instead of a static form, SurveyHuman uses a voice agent to ask follow-up questions and better understand why people feel the way they do.',
+    demo: {
+      type: 'embed',
+      title: 'SurveyHuman demo video',
+      src: 'https://www.youtube.com/embed/SmlRMyXofbA?si=X1heZfixy2k2x2-1',
+    },
+    stack: 'Next.js, Supabase, ElevenLabs',
+  },
+  {
+    name: 'qard',
+    description:
+      'A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for real-time automatic transaction routing.',
+    descriptionSuffixLink: {
+      label: 'qard.dev',
+      href: 'https://qard.dev',
+    },
+    stack: 'Flutter + Swift, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
+  },
+  {
     name: 'binder',
     description:
-      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. The video below shows an example of a generated lesson plan.',
+      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more.',
     demo: {
       type: 'embed',
       title: 'Binder demo video',
@@ -166,24 +192,21 @@ const projectDirectories: ProjectDirectory[] = [
     stack: 'Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku',
   },
   {
-    name: 'qard',
+    name: 'pryva',
     description:
-      'A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for automatic transaction routing.',
-    descriptionSuffixLink: {
-      label: 'qard.dev',
-      href: 'https://qard.dev',
-    },
-    stack: 'Flutter + Swift, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
+      'Started as a hackathon project that we won against 200+ teams. Eventually pivoted into safety and health monitoring platform for senior living, with integrations like Nobi Smart Lamps for fall detection and Nami.ai for motion sensing. Outreached to senior homes in Central Ohio through cold emails, calls, and in-person visits. Built a POC in Angular and Go before shipping an MVP in Bubble. Finalists in the 2024 Ohio State President\'s Buckeye Accelerator startup pitch competition.',
+    stack: 'Angular, Go, Bubble.io',
   },
   {
-    name: 'ips-hackathon-mvp',
+    name: 'ipfs-share',
     description:
-      'A first-place hackathon prototype for indoor positioning that combined BLE, magnetometer, and ultrawideband sensor data to solve the Honda Challenge at HackOHI/O.',
+      'Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship: global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.',
     demo: {
-      type: 'text',
-      label: 'Private / no public demo',
+      type: 'embed',
+      title: 'IPFS share demo video',
+      src: 'https://www.youtube.com/embed/q-GvCjngCyw?si=IslCpntt3NKFg3ox',
     },
-    stack: 'BLE, magnetometer, ultrawideband, MVP prototype',
+    stack: 'IPFS',
   },
 ]
 
@@ -434,12 +457,29 @@ function App() {
                 value={project.name}
                 className="project-directory__item"
               >
-                <AccordionTrigger className="project-directory__trigger">
-                  <span className="project-directory__caret" aria-hidden="true">
-                    {'>'}
-                  </span>
-                  <span className="project-directory__name">{project.name}</span>
-                </AccordionTrigger>
+                <div className="project-directory__header">
+                  <AccordionTrigger className="project-directory__trigger">
+                    <span className="project-directory__caret" aria-hidden="true">
+                      {'>'}
+                    </span>
+                    <span className="project-directory__name">{project.name}</span>
+                  </AccordionTrigger>
+                  {project.repoHref ? (
+                    <a
+                      className="project-directory__repo-link"
+                      href={project.repoHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`View ${project.name} repository on GitHub`}
+                    >
+                      <img
+                        className="project-directory__repo-icon"
+                        src={isDark ? githubIconWhite : githubIconBlack}
+                        alt=""
+                      />
+                    </a>
+                  ) : null}
+                </div>
                 <AccordionContent className="project-directory__content">
                   <div className="project-directory__panel">
                     <dl className="project-directory__meta">
@@ -475,14 +515,16 @@ function App() {
                               </a>
                             ) : project.demo.type === 'embed' ? (
                               <div className="project-directory__video-shell">
-                                <iframe
-                                  className="project-directory__video"
-                                  src={project.demo.src}
-                                  title={project.demo.title}
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                  referrerPolicy="strict-origin-when-cross-origin"
-                                  allowFullScreen
-                                />
+                                <iframe 
+                                  width="560" 
+                                  height="315" 
+                                  src="https://www.youtube.com/embed/2bw5VEtrB1I?si=0spXcA5GNt3qmCAN" 
+                                  title="YouTube video player" 
+                                  frameborder="0" 
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                  referrerpolicy="strict-origin-when-cross-origin" 
+                                  allowfullscreen>
+                                </iframe>
                               </div>
                             ) : (
                               <span className="project-directory__demo project-directory__demo--muted">
