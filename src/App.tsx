@@ -146,6 +146,16 @@ const wordGap = '\n\n'
 const targetRowCount = 8
 const animationIntervalMs = 120
 const switchHoldTicks = 4
+const currentContextItems = [
+  'Currently implementing agentic automations for embedded systems testing/simulation at Honda',
+  'I like working at the intersection of product and software',
+  'I build in my free time outside of work. I also grapple',
+] as const
+const currentContextTypingIntervalMs = 24
+const currentContextTypingStep = 1
+const maxCurrentContextLength = Math.max(
+  ...currentContextItems.map((item) => item.length),
+)
 const themeStorageKey = 'theme'
 type SocialLink =
   | {
@@ -264,6 +274,14 @@ function getPreferredTheme() {
   }
 
   return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
 function getNoiseSeed(
@@ -410,6 +428,9 @@ function App() {
   const [animationTick, setAnimationTick] = useState(0)
   const [isDark, setIsDark] = useState(getPreferredTheme)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
+  const [revealedContextLength, setRevealedContextLength] = useState(() =>
+    prefersReducedMotion() ? maxCurrentContextLength : 0,
+  )
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
@@ -418,7 +439,7 @@ function App() {
   })
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (prefersReducedMotion()) {
       return undefined
     }
 
@@ -430,6 +451,30 @@ function App() {
       window.clearInterval(intervalId)
     }
   }, [])
+
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setRevealedContextLength(maxCurrentContextLength)
+      return undefined
+    }
+
+    if (revealedContextLength >= maxCurrentContextLength) {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setRevealedContextLength((currentLength) =>
+        Math.min(
+          currentLength + currentContextTypingStep,
+          maxCurrentContextLength,
+        ),
+      )
+    }, currentContextTypingIntervalMs)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [revealedContextLength])
 
   useEffect(() => {
     const root = document.documentElement
@@ -540,16 +585,23 @@ function App() {
               Current context
             </h2>
             <ul className="current-context__list">
-              <li className="current-context__item">
-                Currently implementing agentic automations for embedded systems
-                testing/simulation at Honda
-              </li>
-              <li className="current-context__item">
-                I like working at the intersection of product and software.
-              </li>
-              <li className="current-context__item">
-                I build in my free time outside of work. I also grapple and golf.
-              </li>
+              {currentContextItems.map((item) => {
+                const isTyping = revealedContextLength < item.length
+
+                return (
+                  <li key={item} className="current-context__item">
+                    <span className="sr-only">{item}</span>
+                    <span
+                      aria-hidden="true"
+                      className={`current-context__text${
+                        isTyping ? ' current-context__text--typing' : ''
+                      }`}
+                    >
+                      {item.slice(0, revealedContextLength)}
+                    </span>
+                  </li>
+                )
+              })}
             </ul>
           </section>
         </div>
