@@ -7,6 +7,8 @@ import {
 } from '@/components/ui/accordion'
 import githubIconBlack from './assets/GitHub_Invertocat_Black.png'
 import githubIconWhite from './assets/GitHub_Invertocat_White.png'
+import linkedInIconBlack from './assets/InBug-Black.png'
+import linkedInIconWhite from './assets/InBug-White.png'
 import './App.css'
 
 type ProjectDirectory = {
@@ -145,6 +147,42 @@ const targetRowCount = 8
 const animationIntervalMs = 120
 const switchHoldTicks = 4
 const themeStorageKey = 'theme'
+type SocialLink =
+  | {
+      label: string
+      href: string
+      kind: 'image'
+      lightIcon: string
+      darkIcon: string
+    }
+  | {
+      label: string
+      href: string
+      kind: 'smiley'
+    }
+
+const socialLinks: SocialLink[] = [
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/donovanliao/',
+    kind: 'image',
+    lightIcon: linkedInIconBlack,
+    darkIcon: linkedInIconWhite,
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/donovan0902',
+    kind: 'image',
+    lightIcon: githubIconBlack,
+    darkIcon: githubIconWhite,
+  },
+  {
+    label: 'Climbing video',
+    href: 'https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW',
+    kind: 'smiley',
+  },
+] as const
+
 const projectDirectories: ProjectDirectory[] = [
   {
     name: 'garden',
@@ -404,6 +442,56 @@ function App() {
 
   return (
     <main className="landing">
+      <nav className="social-links" aria-label="Social links">
+        {socialLinks.map((link) => (
+          <a
+            key={link.label}
+            className="social-links__link"
+            href={link.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={link.label}
+          >
+            {link.kind === 'image' ? (
+              <img
+                className="social-links__icon"
+                src={isDark ? link.darkIcon : link.lightIcon}
+                alt=""
+              />
+            ) : (
+              <svg
+                className="social-links__icon social-links__icon--smiley"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+                role="presentation"
+              >
+                <circle
+                  className="social-links__smiley-face"
+                  cx="10"
+                  cy="10"
+                  r="9"
+                />
+                <circle
+                  className="social-links__smiley-eye"
+                  cx="7.1"
+                  cy="8.4"
+                  r="1"
+                />
+                <circle
+                  className="social-links__smiley-eye"
+                  cx="12.9"
+                  cy="8.4"
+                  r="1"
+                />
+                <path
+                  className="social-links__smiley-mouth"
+                  d="M6.7 11.5c.78 1.68 1.9 2.52 3.3 2.52s2.52-.84 3.3-2.52"
+                />
+              </svg>
+            )}
+          </a>
+        ))}
+      </nav>
       <button
         type="button"
         className="theme-toggle"
@@ -415,25 +503,26 @@ function App() {
       >
         <span className="theme-toggle__icon" aria-hidden="true">
           <svg
-            viewBox="0 0 24 24"
+            viewBox="0 0 28 20"
             className="theme-toggle__glyph"
             role="presentation"
           >
-            <circle className="theme-toggle__sun" cx="12" cy="12" r="4.25" />
-            <path
-              className="theme-toggle__moon"
-              d="M14.8 4.7a7.5 7.5 0 1 0 4.5 13.6 8.4 8.4 0 1 1-4.5-13.6Z"
+            <rect
+              className="theme-toggle__block theme-toggle__block--light"
+              x="2"
+              y="4"
+              width="14"
+              height="12"
+              rx="3"
             />
-            <g className="theme-toggle__rays">
-              <path d="M12 2.25v2.1" />
-              <path d="M12 19.65v2.1" />
-              <path d="M2.25 12h2.1" />
-              <path d="M19.65 12h2.1" />
-              <path d="m5.1 5.1 1.48 1.48" />
-              <path d="m17.42 17.42 1.48 1.48" />
-              <path d="m5.1 18.9 1.48-1.48" />
-              <path d="m17.42 6.58 1.48-1.48" />
-            </g>
+            <rect
+              className="theme-toggle__block theme-toggle__block--dark"
+              x="12"
+              y="2"
+              width="14"
+              height="12"
+              rx="3"
+            />
           </svg>
         </span>
       </button>
