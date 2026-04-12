@@ -460,7 +460,7 @@
   margin-top: 0.15rem;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
-  border-radius: 0.85rem;
+  border-radius: 0.45rem;
   background: color-mix(in srgb, var(--page-bg) 82%, black 18%);
 }
 
