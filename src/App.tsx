@@ -25,7 +25,7 @@ type ProjectDirectory = {
         type: 'text'
         label: string
       }
-  stack: string[]
+  stack: string
 }
 
 const glyphs: Record<string, string[]> = {
@@ -148,7 +148,8 @@ const projectDirectories: ProjectDirectory[] = [
       label: 'projectgarden.dev',
       href: 'https://projectgarden.dev',
     },
-    stack: ['Next.js', 'Convex (self-hosted)', 'Amplify', 'Cognito'],
+    stack:
+      'Next.js, Convex: cloud -> self-hosted with Docker + EC2 (with RDS Postgres and S3) + Nginx, Vercel -> Amplify, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), ALB + WAF (network level restriction), AWS SES',
   },
   {
     name: 'binder',
@@ -159,7 +160,7 @@ const projectDirectories: ProjectDirectory[] = [
       title: 'Binder demo video',
       src: 'https://www.youtube.com/embed/DtywpVV41R4?si=mhtxt9HYMTIzJ3Lu',
     },
-    stack: ['Next.js', 'Supabase', 'Flask', 'LangGraph', 'Heroku'],
+    stack: 'Next.js, Supabase, Flask, LangGraph, Heroku',
   },
   {
     name: 'qard',
@@ -170,7 +171,7 @@ const projectDirectories: ProjectDirectory[] = [
       label: 'qard.dev',
       href: 'https://qard.dev',
     },
-    stack: ['Flutter', 'AWS Lambda', 'DynamoDB', 'GCP', 'Lithic'],
+    stack: 'Flutter, AWS Lambda, DynamoDB, GCP, Lithic',
   },
   {
     name: 'ips-hackathon-mvp',
@@ -180,7 +181,7 @@ const projectDirectories: ProjectDirectory[] = [
       type: 'text',
       label: 'Private / no public demo',
     },
-    stack: ['BLE', 'Magnetometer', 'Ultrawideband', 'MVP Prototype'],
+    stack: 'BLE, magnetometer, ultrawideband, MVP prototype',
   },
 ]
 
@@ -476,7 +477,7 @@ function App() {
                       </div>
                       <div className="project-directory__field">
                         <dd className="project-directory__field-value">
-                          {project.stack.join(' / ')}
+                          {project.stack}
                         </dd>
                       </div>
                     </dl>
