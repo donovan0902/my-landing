@@ -198,7 +198,7 @@
   font-optical-sizing: auto;
   font-style: normal;
   font-variation-settings: 'wdth' 100;
-  font-weight: 350;
+  font-weight: 450;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -225,7 +225,7 @@
 .project-directory__meta {
   margin: 0;
   display: grid;
-  gap: 0.7rem;
+  gap: calc(0.85rem * 0.65);
 }
 
 .project-directory__field {
@@ -247,9 +247,13 @@
 }
 
 .project-directory__field-value--description {
-  font-family: 'Average', serif;
-  font-size: 1rem;
-  line-height: 1.7;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.85rem;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: 'wdth' 100;
+  font-weight: 300;
+  line-height: 1.65;
 }
 
 .project-directory__description-suffix-link {

@@ -163,18 +163,17 @@ const projectDirectories: ProjectDirectory[] = [
       title: 'Binder demo video',
       src: 'https://www.youtube.com/embed/DtywpVV41R4?si=mhtxt9HYMTIzJ3Lu',
     },
-    stack: 'Next.js, Supabase, Flask, LangGraph, Heroku',
+    stack: 'Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku',
   },
   {
     name: 'qard',
     description:
       'A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for automatic transaction routing.',
-    demo: {
-      type: 'link',
+    descriptionSuffixLink: {
       label: 'qard.dev',
       href: 'https://qard.dev',
     },
-    stack: 'Flutter, AWS Lambda, DynamoDB, GCP, Lithic',
+    stack: 'Flutter + Swift, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
   },
   {
     name: 'ips-hackathon-mvp',
