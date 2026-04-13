@@ -214,7 +214,7 @@ const projectDirectories: ProjectDirectory[] = [
     demo: {
       type: 'embed',
       title: 'SurveyHuman demo video',
-      src: 'https://www.youtube.com/embed/SmlRMyXofbA?si=X1heZfixy2k2x2-1',
+      src: 'https://www.youtube.com/embed/SmlRMyXofbA?si=3HIsZLusJiTTDV88',
     },
     stack: 'Next.js, Supabase, ElevenLabs',
   },
@@ -235,7 +235,7 @@ const projectDirectories: ProjectDirectory[] = [
     demo: {
       type: 'embed',
       title: 'Binder demo video',
-      src: 'https://www.youtube.com/embed/DtywpVV41R4?si=mhtxt9HYMTIzJ3Lu',
+      src: 'https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo',
     },
     stack: 'Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku',
   },
@@ -248,11 +248,11 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: 'ipfs-share',
     description:
-      'Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship: global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.',
+      'Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship. Global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.',
     demo: {
       type: 'embed',
       title: 'IPFS share demo video',
-      src: 'https://www.youtube.com/embed/q-GvCjngCyw?si=IslCpntt3NKFg3ox',
+      src: 'https://www.youtube.com/embed/q-GvCjngCyw?si=JJw3VQe9-svN9-2p',
     },
     stack: 'IPFS',
   },
@@ -703,8 +703,8 @@ function App() {
                               <div className="project-directory__video-shell">
                                 <iframe
                                   className="project-directory__video"
-                                  src="https://www.youtube.com/embed/2bw5VEtrB1I?si=0spXcA5GNt3qmCAN"
-                                  title="YouTube video player"
+                                  src={project.demo.src}
+                                  title={project.demo.title}
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                   referrerPolicy="strict-origin-when-cross-origin"
                                   allowFullScreen
