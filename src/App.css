@@ -241,7 +241,7 @@
 .current-context__text--typing::after {
   content: '|';
   opacity: 0.7;
-  animation: current-context-caret 2700ms steps(1, end) infinite;
+  animation: current-context-caret 900ms steps(1, end) infinite;
 }
 
 .project-directory {
