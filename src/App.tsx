@@ -151,7 +151,7 @@ const currentContextItems = [
   'I enjoy working at the intersection of product and software',
   'I build in my free time outside of work. I also grapple',
 ] as const
-const currentContextTypingIntervalMs = 24
+const currentContextTypingIntervalMs = 28
 const currentContextTypingStep = 1
 const maxCurrentContextLength = Math.max(
   ...currentContextItems.map((item) => item.length),
@@ -541,7 +541,7 @@ function App() {
             )}
             {link.kind === 'smiley' ? (
               <span className="social-links__tooltip" aria-hidden="true">
-                a non-software project
+                a non-software creation
               </span>
             ) : null}
           </a>
