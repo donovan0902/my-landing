@@ -8,7 +8,7 @@
 
 .hero {
   max-width: 100%;
-  width: min(100%, 72rem);
+  width: min(100%, 92rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 30rem);
   align-items: start;
@@ -16,11 +16,11 @@
   overflow-x: clip;
 }
 
-/* Equal columns: Projects starts at the hero’s horizontal center (hero is viewport-centered). */
+/* Slightly wider projects column; clip offset below keeps alignment without eating width. */
 @media (min-width: 769px) {
   .hero {
-    gap: 0.35rem;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(0.35rem, 1vw, 0.75rem);
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   }
 
   /* Keep the projects block vertically centered against the left column. */
@@ -254,8 +254,8 @@
   font-family: var(--display-mono);
   --project-directory-caret-width: 1ch;
   --project-directory-trigger-gap: 0.5rem;
-  --project-directory-clip-offset: clamp(4rem, 9vw, 7rem);
-  --project-directory-enter-distance: 4.5rem;
+  --project-directory-clip-offset: clamp(1.25rem, 3vw, 2.75rem);
+  --project-directory-enter-distance: 2.25rem;
   margin-inline-start: calc(var(--project-directory-clip-offset) * -1);
   padding-inline-start: var(--project-directory-clip-offset);
   overflow: hidden;
@@ -518,7 +518,8 @@
 
 .project-directory__video-shell {
   position: relative;
-  width: min(100%, 38rem);
+  width: 100%;
+  max-width: 52rem;
   aspect-ratio: 16 / 9;
   margin-top: 0.15rem;
   overflow: hidden;
