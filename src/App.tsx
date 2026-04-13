@@ -226,7 +226,7 @@ const projectDirectories: ProjectDirectory[] = [
       label: 'qard.dev',
       href: 'https://qard.dev',
     },
-    stack: 'Flutter + Swift, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
+    stack: 'Flutter + Swift, Expressjs, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
   },
   {
     name: 'binder',
