@@ -151,7 +151,7 @@ const currentContextItems = [
   'I enjoy working at the intersection of product and software',
   'I build in my free time outside of work. I also grapple',
 ] as const
-const currentContextTypingIntervalMs = 28
+const currentContextTypingIntervalMs = 20
 const currentContextTypingStep = 1
 const maxCurrentContextLength = Math.max(
   ...currentContextItems.map((item) => item.length),
@@ -435,6 +435,8 @@ function App() {
   const visibleContextLength = shouldReduceMotion
     ? maxCurrentContextLength
     : revealedContextLength
+  const isProjectDirectoryVisible =
+    shouldReduceMotion || visibleContextLength >= maxCurrentContextLength
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
@@ -631,121 +633,125 @@ function App() {
             </ul>
           </section>
         </div>
-        <div className="project-directory" aria-label="Projects">
-          <p className="project-directory__label">Projects</p>
-          <Accordion
-            type="single"
-            collapsible
-            className="project-directory__list"
-            value={expandedProject ?? undefined}
-            onValueChange={setExpandedProject}
-          >
-            {projectDirectories.map((project) => (
-              <AccordionItem
-                key={project.name}
-                value={project.name}
-                className="project-directory__item"
+        {isProjectDirectoryVisible ? (
+          <div className="project-directory" aria-label="Projects">
+            <div className="project-directory__inner">
+              <p className="project-directory__label">Projects</p>
+              <Accordion
+                type="single"
+                collapsible
+                className="project-directory__list"
+                value={expandedProject ?? undefined}
+                onValueChange={setExpandedProject}
               >
-                <div className="project-directory__header">
-                  <AccordionTrigger className="project-directory__trigger">
-                    <span className="project-directory__caret" aria-hidden="true">
-                      {'>'}
-                    </span>
-                    <span className="project-directory__name">{project.name}</span>
-                  </AccordionTrigger>
-                  {project.repoHref ? (
-                    <a
-                      className="project-directory__repo-link"
-                      href={project.repoHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`View ${project.name} repository on GitHub`}
-                    >
-                      <img
-                        className="project-directory__repo-icon"
-                        src={isDark ? githubIconWhite : githubIconBlack}
-                        alt=""
-                      />
-                    </a>
-                  ) : null}
-                </div>
-                <AccordionContent className="project-directory__content">
-                  <div className="project-directory__panel">
-                    <dl className="project-directory__meta">
-                      <div className="project-directory__field project-directory__field--description">
-                        <dd className="project-directory__field-value project-directory__field-value--description">
-                          {project.description}
-                          {project.descriptionSuffixLink ? (
-                            <>
-                              {' '}
-                              <a
-                                className="project-directory__description-suffix-link"
-                                href={project.descriptionSuffixLink.href}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {project.descriptionSuffixLink.label}
-                              </a>
-                            </>
-                          ) : null}
-                        </dd>
-                      </div>
-                      {project.demo ? (
-                        <div className="project-directory__field project-directory__field--demo">
-                          <dd className="project-directory__field-value project-directory__field-value--demo">
-                            {project.demo.type === 'link' ? (
-                              <a
-                                className="project-directory__demo"
-                                href={project.demo.href}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {project.demo.label}
-                              </a>
-                            ) : project.demo.type === 'embed' ? (
-                              <div className="project-directory__video-shell">
-                                <iframe
-                                  className="project-directory__video"
-                                  src={project.demo.src}
-                                  title={project.demo.title}
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                  referrerPolicy="strict-origin-when-cross-origin"
-                                  allowFullScreen
-                                />
-                              </div>
-                            ) : (
-                              <span className="project-directory__demo project-directory__demo--muted">
-                                {project.demo.label}
-                              </span>
-                            )}
-                          </dd>
-                        </div>
+                {projectDirectories.map((project) => (
+                  <AccordionItem
+                    key={project.name}
+                    value={project.name}
+                    className="project-directory__item"
+                  >
+                    <div className="project-directory__header">
+                      <AccordionTrigger className="project-directory__trigger">
+                        <span className="project-directory__caret" aria-hidden="true">
+                          {'>'}
+                        </span>
+                        <span className="project-directory__name">{project.name}</span>
+                      </AccordionTrigger>
+                      {project.repoHref ? (
+                        <a
+                          className="project-directory__repo-link"
+                          href={project.repoHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`View ${project.name} repository on GitHub`}
+                        >
+                          <img
+                            className="project-directory__repo-icon"
+                            src={isDark ? githubIconWhite : githubIconBlack}
+                            alt=""
+                          />
+                        </a>
                       ) : null}
-                      <div className="project-directory__field project-directory__field--stack">
-                        <dd className="project-directory__field-value">
-                          <ul className="project-directory__stack-list">
-                            {project.stack
-                              .split(',')
-                              .map((item) => item.trim())
-                              .filter(Boolean)
-                              .map((item) => (
-                                <li
-                                  key={`${project.name}-${item}`}
-                                  className="project-directory__stack-item"
-                                >
-                                  {item}
-                                </li>
-                              ))}
-                          </ul>
-                        </dd>
+                    </div>
+                    <AccordionContent className="project-directory__content">
+                      <div className="project-directory__panel">
+                        <dl className="project-directory__meta">
+                          <div className="project-directory__field project-directory__field--description">
+                            <dd className="project-directory__field-value project-directory__field-value--description">
+                              {project.description}
+                              {project.descriptionSuffixLink ? (
+                                <>
+                                  {' '}
+                                  <a
+                                    className="project-directory__description-suffix-link"
+                                    href={project.descriptionSuffixLink.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {project.descriptionSuffixLink.label}
+                                  </a>
+                                </>
+                              ) : null}
+                            </dd>
+                          </div>
+                          {project.demo ? (
+                            <div className="project-directory__field project-directory__field--demo">
+                              <dd className="project-directory__field-value project-directory__field-value--demo">
+                                {project.demo.type === 'link' ? (
+                                  <a
+                                    className="project-directory__demo"
+                                    href={project.demo.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {project.demo.label}
+                                  </a>
+                                ) : project.demo.type === 'embed' ? (
+                                  <div className="project-directory__video-shell">
+                                    <iframe
+                                      className="project-directory__video"
+                                      src={project.demo.src}
+                                      title={project.demo.title}
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                      referrerPolicy="strict-origin-when-cross-origin"
+                                      allowFullScreen
+                                    />
+                                  </div>
+                                ) : (
+                                  <span className="project-directory__demo project-directory__demo--muted">
+                                    {project.demo.label}
+                                  </span>
+                                )}
+                              </dd>
+                            </div>
+                          ) : null}
+                          <div className="project-directory__field project-directory__field--stack">
+                            <dd className="project-directory__field-value">
+                              <ul className="project-directory__stack-list">
+                                {project.stack
+                                  .split(',')
+                                  .map((item) => item.trim())
+                                  .filter(Boolean)
+                                  .map((item) => (
+                                    <li
+                                      key={`${project.name}-${item}`}
+                                      className="project-directory__stack-item"
+                                    >
+                                      {item}
+                                    </li>
+                                  ))}
+                              </ul>
+                            </dd>
+                          </div>
+                        </dl>
                       </div>
-                    </dl>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        ) : null}
       </section>
     </main>
   )
