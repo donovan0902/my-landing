@@ -541,7 +541,7 @@ function App() {
             )}
             {link.kind === 'smiley' ? (
               <span className="social-links__tooltip" aria-hidden="true">
-                a non-software project
+                a non-software creation
               </span>
             ) : null}
           </a>
