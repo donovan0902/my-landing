@@ -6,6 +6,7 @@
   padding: clamp(1.5rem, 4vw, 4rem);
   padding-bottom: calc(clamp(1.5rem, 4vw, 4rem) + var(--footer-icons-clearance));
   position: relative;
+  isolation: isolate;
 }
 
 .hero {
@@ -148,6 +149,8 @@
   border: 0;
   background: transparent;
   cursor: pointer;
+  z-index: 3;
+  touch-action: manipulation;
 }
 
 .theme-toggle:focus-visible {
@@ -623,6 +626,11 @@
 
   .hero__left {
     gap: 1rem;
+    padding-right: 3.25rem;
+  }
+
+  .current-context {
+    margin-bottom: 1rem;
   }
 
   .social-links {
@@ -641,6 +649,7 @@
   .project-directory {
     order: 2;
     margin-top: 0;
+    margin-bottom: 0.85rem;
     margin-inline-start: 0;
     padding-inline-start: 0;
     width: 100%;
