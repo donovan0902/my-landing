@@ -425,12 +425,16 @@ function renderWordmark(text: string, tick: number) {
 }
 
 function App() {
+  const shouldReduceMotion = prefersReducedMotion()
   const [animationTick, setAnimationTick] = useState(0)
   const [isDark, setIsDark] = useState(getPreferredTheme)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [revealedContextLength, setRevealedContextLength] = useState(() =>
-    prefersReducedMotion() ? maxCurrentContextLength : 0,
+    shouldReduceMotion ? maxCurrentContextLength : 0,
   )
+  const visibleContextLength = shouldReduceMotion
+    ? maxCurrentContextLength
+    : revealedContextLength
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
@@ -439,7 +443,7 @@ function App() {
   })
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
+    if (shouldReduceMotion) {
       return undefined
     }
 
@@ -450,11 +454,10 @@ function App() {
     return () => {
       window.clearInterval(intervalId)
     }
-  }, [])
+  }, [shouldReduceMotion])
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      setRevealedContextLength(maxCurrentContextLength)
+    if (shouldReduceMotion) {
       return undefined
     }
 
@@ -474,7 +477,7 @@ function App() {
     return () => {
       window.clearTimeout(timeoutId)
     }
-  }, [revealedContextLength])
+  }, [revealedContextLength, shouldReduceMotion])
 
   useEffect(() => {
     const root = document.documentElement
@@ -609,7 +612,7 @@ function App() {
             </h2>
             <ul className="current-context__list">
               {currentContextItems.map((item) => {
-                const isTyping = revealedContextLength < item.length
+                const isTyping = visibleContextLength < item.length
 
                 return (
                   <li key={item} className="current-context__item">
@@ -620,7 +623,7 @@ function App() {
                         isTyping ? ' current-context__text--typing' : ''
                       }`}
                     >
-                      {item.slice(0, revealedContextLength)}
+                      {item.slice(0, visibleContextLength)}
                     </span>
                   </li>
                 )
