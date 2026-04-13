@@ -148,7 +148,7 @@ const animationIntervalMs = 120
 const switchHoldTicks = 4
 const currentContextItems = [
   'Currently implementing agentic automations for embedded systems testing/simulation at Honda',
-  'I like working at the intersection of product and software',
+  'I enjoy working at the intersection of product and software',
   'I build in my free time outside of work. I also grapple',
 ] as const
 const currentContextTypingIntervalMs = 24
@@ -491,7 +491,9 @@ function App() {
         {socialLinks.map((link) => (
           <a
             key={link.label}
-            className="social-links__link"
+            className={`social-links__link${
+              link.kind === 'smiley' ? ' social-links__link--with-tooltip' : ''
+            }`}
             href={link.href}
             target="_blank"
             rel="noreferrer"
@@ -534,6 +536,11 @@ function App() {
                 />
               </svg>
             )}
+            {link.kind === 'smiley' ? (
+              <span className="social-links__tooltip" aria-hidden="true">
+                a non-software project
+              </span>
+            ) : null}
           </a>
         ))}
       </nav>
