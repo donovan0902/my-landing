@@ -149,7 +149,7 @@ const switchHoldTicks = 4
 const currentContextItems = [
   'Currently implementing agentic automations for embedded systems testing/simulation at Honda',
   'I enjoy working at the intersection of product and software',
-  'I build in my free time outside of work. I also grapple',
+  'I build in my free time outside of work',
 ] as const
 const currentContextTypingIntervalMs = 20
 const currentContextTypingStep = 1
