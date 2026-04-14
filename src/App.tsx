@@ -9,6 +9,7 @@ import githubIconBlack from './assets/GitHub_Invertocat_Black.png'
 import githubIconWhite from './assets/GitHub_Invertocat_White.png'
 import linkedInIconBlack from './assets/InBug-Black.png'
 import linkedInIconWhite from './assets/InBug-White.png'
+import pitchDeckPdf from './assets/Pitch Deck.pdf'
 import './App.css'
 
 type ProjectDirectory = {
@@ -243,6 +244,11 @@ const projectDirectories: ProjectDirectory[] = [
     name: 'pryva',
     description:
       'Started as a hackathon project that we won against 200+ teams. Eventually pivoted into safety and health monitoring platform for senior living, with integrations like Nobi Smart Lamps for fall detection and Nami.ai for motion sensing. Outreached to senior homes in Central Ohio through cold emails, calls, and in-person visits. Built a POC in Angular and Go before shipping an MVP in Bubble. Finalists in the 2024 Ohio State President\'s Buckeye Accelerator startup pitch competition.',
+    demo: {
+      type: 'embed',
+      title: 'Pryva pitch deck',
+      src: pitchDeckPdf,
+    },
     stack: 'Angular, Go, Bubble.io',
   },
   {
