@@ -232,7 +232,7 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: 'binder',
     description:
-      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app.',
+      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition.',
     demo: {
       type: 'embed',
       title: 'Binder demo video',
