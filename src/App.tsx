@@ -239,7 +239,7 @@ const projectDirectories: ProjectDirectory[] = [
       title: "Binder demo video",
       src: "https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo",
     },
-    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Heroku",
+    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Stripe, Heroku",
   },
   {
     name: "pryva",
