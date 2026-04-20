@@ -233,21 +233,13 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: "binder",
     description:
-<<<<<<< HEAD
-      "An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more.",
-=======
-      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition.',
->>>>>>> cf4bc1fcef57b43ed385f4881f8a85128ebc8a51
+      "An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition.",
     demo: {
       type: "embed",
       title: "Binder demo video",
       src: "https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo",
     },
-<<<<<<< HEAD
-    stack: "Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku",
-=======
-    stack: 'Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Heroku',
->>>>>>> cf4bc1fcef57b43ed385f4881f8a85128ebc8a51
+    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Heroku",
   },
   {
     name: "pryva",
