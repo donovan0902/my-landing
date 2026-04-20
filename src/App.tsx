@@ -1,293 +1,294 @@
-import { startTransition, useEffect, useEffectEvent, useState } from 'react'
+import { startTransition, useEffect, useEffectEvent, useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import githubIconBlack from './assets/GitHub_Invertocat_Black.png'
-import githubIconWhite from './assets/GitHub_Invertocat_White.png'
-import linkedInIconBlack from './assets/InBug-Black.png'
-import linkedInIconWhite from './assets/InBug-White.png'
-import pitchDeckPdf from './assets/Pitch Deck.pdf'
-import './App.css'
+} from "@/components/ui/accordion";
+import githubIconBlack from "./assets/GitHub_Invertocat_Black.png";
+import githubIconWhite from "./assets/GitHub_Invertocat_White.png";
+import linkedInIconBlack from "./assets/InBug-Black.png";
+import linkedInIconWhite from "./assets/InBug-White.png";
+import pitchDeckPdf from "./assets/Pitch Deck.pdf";
+import "./App.css";
 
 type ProjectDirectory = {
-  name: string
-  repoHref?: string
-  description: string
+  name: string;
+  repoHref?: string;
+  description: string;
   descriptionSuffixLink?: {
-    label: string
-    href: string
-  }
+    label: string;
+    href: string;
+  };
   demo?:
     | {
-        type: 'link'
-        label: string
-        href: string
+        type: "link";
+        label: string;
+        href: string;
       }
     | {
-        type: 'embed'
-        title: string
-        src: string
+        type: "embed";
+        title: string;
+        src: string;
       }
     | {
-        type: 'text'
-        label: string
-      }
-  stack: string
-}
+        type: "text";
+        label: string;
+      };
+  stack: string;
+};
 
 const glyphs: Record<string, string[]> = {
   A: [
-    '000111000',
-    '001111100',
-    '011000110',
-    '011000110',
-    '011000110',
-    '011111110',
-    '011111110',
-    '011000110',
-    '011000110',
-    '011000110',
-    '011000110',
+    "000111000",
+    "001111100",
+    "011000110",
+    "011000110",
+    "011000110",
+    "011111110",
+    "011111110",
+    "011000110",
+    "011000110",
+    "011000110",
+    "011000110",
   ],
   D: [
-    '111110000',
-    '111111000',
-    '110001100',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110001100',
-    '111111000',
-    '111110000',
+    "111110000",
+    "111111000",
+    "110001100",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110001100",
+    "111111000",
+    "111110000",
   ],
   I: [
-    '111111111',
-    '111111111',
-    '000111000',
-    '000111000',
-    '000111000',
-    '000111000',
-    '000111000',
-    '000111000',
-    '000111000',
-    '111111111',
-    '111111111',
+    "111111111",
+    "111111111",
+    "000111000",
+    "000111000",
+    "000111000",
+    "000111000",
+    "000111000",
+    "000111000",
+    "000111000",
+    "111111111",
+    "111111111",
   ],
   L: [
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '110000000',
-    '111111111',
-    '111111111',
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "110000000",
+    "111111111",
+    "111111111",
   ],
   N: [
-    '110000110',
-    '111000110',
-    '111100110',
-    '111110110',
-    '110111110',
-    '110011110',
-    '110001110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
+    "110000110",
+    "111000110",
+    "111100110",
+    "111110110",
+    "110111110",
+    "110011110",
+    "110001110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
   ],
   O: [
-    '001111000',
-    '011111100',
-    '110001110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110001110',
-    '011111100',
-    '001111000',
+    "001111000",
+    "011111100",
+    "110001110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110001110",
+    "011111100",
+    "001111000",
   ],
   V: [
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '110000110',
-    '011001100',
-    '011001100',
-    '001111000',
-    '001111000',
-    '000110000',
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "110000110",
+    "011001100",
+    "011001100",
+    "001111000",
+    "001111000",
+    "000110000",
   ],
-}
+};
 
 const densityBands = [
-  ['.', '`', "'", ','],
-  [':', ';', '~'],
-  ['-', '=', '_'],
-  ['+', '*', 'x'],
-  ['#', '%', '&'],
-  ['@', '8', '$', '0', '9'],
-] as const
+  [".", "`", "'", ","],
+  [":", ";", "~"],
+  ["-", "=", "_"],
+  ["+", "*", "x"],
+  ["#", "%", "&"],
+  ["@", "8", "$", "0", "9"],
+] as const;
 
-const name = 'DONOVAN LIAO'
-const letterGap = ' '
-const wordGap = '\n\n'
-const targetRowCount = 8
-const animationIntervalMs = 120
-const switchHoldTicks = 4
+const name = "DONOVAN LIAO";
+const letterGap = " ";
+const wordGap = "\n\n";
+const targetRowCount = 8;
+const animationIntervalMs = 120;
+const switchHoldTicks = 4;
 const currentContextItems = [
-  'Currently implementing agentic automations for embedded systems testing/simulation at Honda',
-  'I enjoy working at the intersection of product and software',
-  'I build in my free time outside of work',
-] as const
-const currentContextTypingIntervalMs = 20
-const currentContextTypingStep = 1
+  "Currently implementing agentic automations for embedded systems testing/simulation at Honda",
+  "I enjoy working at the intersection of product and software",
+  "I build in my free time outside of work",
+] as const;
+const currentContextTypingIntervalMs = 20;
+const currentContextTypingStep = 1;
 const maxCurrentContextLength = Math.max(
   ...currentContextItems.map((item) => item.length),
-)
-const themeStorageKey = 'theme'
+);
+const themeStorageKey = "theme";
 type SocialLink =
   | {
-      label: string
-      href: string
-      kind: 'image'
-      lightIcon: string
-      darkIcon: string
+      label: string;
+      href: string;
+      kind: "image";
+      lightIcon: string;
+      darkIcon: string;
     }
   | {
-      label: string
-      href: string
-      kind: 'smiley'
-    }
+      label: string;
+      href: string;
+      kind: "smiley";
+    };
 
 const socialLinks: SocialLink[] = [
   {
-    label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/donovanliao/',
-    kind: 'image',
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/donovanliao/",
+    kind: "image",
     lightIcon: linkedInIconBlack,
     darkIcon: linkedInIconWhite,
   },
   {
-    label: 'GitHub',
-    href: 'https://github.com/donovan0902',
-    kind: 'image',
+    label: "GitHub",
+    href: "https://github.com/donovan0902",
+    kind: "image",
     lightIcon: githubIconBlack,
     darkIcon: githubIconWhite,
   },
   {
-    label: 'Climbing video',
-    href: 'https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW',
-    kind: 'smiley',
+    label: "Climbing video",
+    href: "https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW",
+    kind: "smiley",
   },
-] as const
+] as const;
 
 const projectDirectories: ProjectDirectory[] = [
   {
-    name: 'garden',
-    repoHref: 'https://github.com/donovan0902/project-hunt',
+    name: "garden",
+    repoHref: "https://github.com/donovan0902/project-hunt",
     description:
-      'Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally. Public facing demo w/mock data:',
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally. Public facing demo w/mock data:",
     descriptionSuffixLink: {
-      label: 'projectgarden.dev',
-      href: 'https://projectgarden.dev',
+      label: "projectgarden.dev",
+      href: "https://projectgarden.dev",
     },
     stack:
-      'Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents',
+      "Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), NAT Gateway + Private Subnet (self-hosted github runner), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents",
   },
   {
-    name: 'surveyhuman',
-    repoHref: 'https://github.com/donovan0902/survey-human',
+    name: "surveyhuman",
+    repoHref: "https://github.com/donovan0902/survey-human",
     description:
-      'Weekend prototype I built after getting frustrated with employee engagement surveys that asked personal questions and reduced the answers to a 1-5 score. Instead of a static form, SurveyHuman uses a voice agent to ask follow-up questions and better understand why people feel the way they do.',
+      "Weekend prototype I built after getting frustrated with employee engagement surveys that asked personal questions and reduced the answers to a 1-5 score. Instead of a static form, SurveyHuman uses a voice agent to ask follow-up questions and better understand why people feel the way they do.",
     demo: {
-      type: 'embed',
-      title: 'SurveyHuman demo video',
-      src: 'https://www.youtube.com/embed/SmlRMyXofbA?si=3HIsZLusJiTTDV88',
+      type: "embed",
+      title: "SurveyHuman demo video",
+      src: "https://www.youtube.com/embed/SmlRMyXofbA?si=3HIsZLusJiTTDV88",
     },
-    stack: 'Next.js, Supabase, ElevenLabs',
+    stack: "Next.js, Supabase, ElevenLabs",
   },
   {
-    name: 'qard',
+    name: "qard",
     description:
-      'A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for real-time automatic transaction routing.',
+      "A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for real-time automatic transaction routing.",
     descriptionSuffixLink: {
-      label: 'qard.dev',
-      href: 'https://qard.dev',
+      label: "qard.dev",
+      href: "https://qard.dev",
     },
-    stack: 'Flutter + Swift, Expressjs, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic',
+    stack:
+      "Flutter + Swift, Expressjs, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic",
   },
   {
-    name: 'binder',
+    name: "binder",
     description:
-      'An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more.',
+      "An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more.",
     demo: {
-      type: 'embed',
-      title: 'Binder demo video',
-      src: 'https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo',
+      type: "embed",
+      title: "Binder demo video",
+      src: "https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo",
     },
-    stack: 'Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku',
+    stack: "Next.js, Supabase, Flask, LangGraph, ElevenLabs, Heroku",
   },
   {
-    name: 'pryva',
+    name: "pryva",
     description:
-      'Started as a hackathon project that we won against 200+ teams. Eventually pivoted into safety and health monitoring platform for senior living, with integrations like Nobi Smart Lamps for fall detection and Nami.ai for motion sensing. Outreached to senior homes in Central Ohio through cold emails, calls, and in-person visits. Built a POC in Angular and Go before shipping an MVP in Bubble. Finalists in the 2024 Ohio State President\'s Buckeye Accelerator startup pitch competition. Check out the pitch deck:',
+      "Started as a hackathon project that we won against 200+ teams. Eventually pivoted into safety and health monitoring platform for senior living, with integrations like Nobi Smart Lamps for fall detection and Nami.ai for motion sensing. Outreached to senior homes in Central Ohio through cold emails, calls, and in-person visits. Built a POC in Angular and Go before shipping an MVP in Bubble. Finalists in the 2024 Ohio State President's Buckeye Accelerator startup pitch competition. Check out the pitch deck:",
     demo: {
-      type: 'embed',
-      title: 'Pryva pitch deck',
+      type: "embed",
+      title: "Pryva pitch deck",
       src: pitchDeckPdf,
     },
-    stack: 'Angular, Go, Bubble.io',
+    stack: "Angular, Go, Bubble.io",
   },
   {
-    name: 'ipfs-share',
+    name: "ipfs-share",
     description:
-      'Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship. Global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.',
+      "Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship. Global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.",
     demo: {
-      type: 'embed',
-      title: 'IPFS share demo video',
-      src: 'https://www.youtube.com/embed/q-GvCjngCyw?si=JJw3VQe9-svN9-2p',
+      type: "embed",
+      title: "IPFS share demo video",
+      src: "https://www.youtube.com/embed/q-GvCjngCyw?si=JJw3VQe9-svN9-2p",
     },
-    stack: 'IPFS',
+    stack: "IPFS",
   },
-]
+];
 
 function getPreferredTheme() {
-  if (typeof window === 'undefined') {
-    return false
+  if (typeof window === "undefined") {
+    return false;
   }
 
-  const storedTheme = window.localStorage.getItem(themeStorageKey)
+  const storedTheme = window.localStorage.getItem(themeStorageKey);
 
-  if (storedTheme === 'dark') {
-    return true
+  if (storedTheme === "dark") {
+    return true;
   }
 
-  if (storedTheme === 'light') {
-    return false
+  if (storedTheme === "light") {
+    return false;
   }
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 function prefersReducedMotion() {
-  if (typeof window === 'undefined') {
-    return false
+  if (typeof window === "undefined") {
+    return false;
   }
 
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function getNoiseSeed(
@@ -298,23 +299,28 @@ function getNoiseSeed(
   wordIndex: number,
 ) {
   return (
-    Math.imul(tick + 1, 2654435761) ^
-    Math.imul(rowIndex + 1, 2246822519) ^
-    Math.imul(globalOffset + columnIndex + 1, 3266489917) ^
-    Math.imul(wordIndex + 1, 668265263)
-  ) >>> 0
+    (Math.imul(tick + 1, 2654435761) ^
+      Math.imul(rowIndex + 1, 2246822519) ^
+      Math.imul(globalOffset + columnIndex + 1, 3266489917) ^
+      Math.imul(wordIndex + 1, 668265263)) >>>
+    0
+  );
 }
 
-function hasFilledPixel(glyph: string[], rowIndex: number, columnIndex: number) {
+function hasFilledPixel(
+  glyph: string[],
+  rowIndex: number,
+  columnIndex: number,
+) {
   if (rowIndex < 0 || rowIndex >= glyph.length) {
-    return false
+    return false;
   }
 
   if (columnIndex < 0 || columnIndex >= glyph[rowIndex].length) {
-    return false
+    return false;
   }
 
-  return glyph[rowIndex][columnIndex] === '1'
+  return glyph[rowIndex][columnIndex] === "1";
 }
 
 function countFilledNeighbors(
@@ -322,33 +328,39 @@ function countFilledNeighbors(
   rowIndex: number,
   columnIndex: number,
 ) {
-  let count = 0
+  let count = 0;
 
   for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
     for (let columnOffset = -1; columnOffset <= 1; columnOffset += 1) {
       if (rowOffset === 0 && columnOffset === 0) {
-        continue
+        continue;
       }
 
-      if (hasFilledPixel(glyph, rowIndex + rowOffset, columnIndex + columnOffset)) {
-        count += 1
+      if (
+        hasFilledPixel(glyph, rowIndex + rowOffset, columnIndex + columnOffset)
+      ) {
+        count += 1;
       }
     }
   }
 
-  return count
+  return count;
 }
 
-function getShadeBandIndex(glyph: string[], rowIndex: number, columnIndex: number) {
-  const filledNeighbors = countFilledNeighbors(glyph, rowIndex, columnIndex)
-  const topOpen = Number(!hasFilledPixel(glyph, rowIndex - 1, columnIndex))
-  const leftOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex - 1))
-  const bottomOpen = Number(!hasFilledPixel(glyph, rowIndex + 1, columnIndex))
-  const rightOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex + 1))
-  const lightBias = topOpen + leftOpen - bottomOpen - rightOpen
-  const weightedDensity = Math.max(0, Math.min(8, filledNeighbors - lightBias))
+function getShadeBandIndex(
+  glyph: string[],
+  rowIndex: number,
+  columnIndex: number,
+) {
+  const filledNeighbors = countFilledNeighbors(glyph, rowIndex, columnIndex);
+  const topOpen = Number(!hasFilledPixel(glyph, rowIndex - 1, columnIndex));
+  const leftOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex - 1));
+  const bottomOpen = Number(!hasFilledPixel(glyph, rowIndex + 1, columnIndex));
+  const rightOpen = Number(!hasFilledPixel(glyph, rowIndex, columnIndex + 1));
+  const lightBias = topOpen + leftOpen - bottomOpen - rightOpen;
+  const weightedDensity = Math.max(0, Math.min(8, filledNeighbors - lightBias));
 
-  return Math.round((weightedDensity / 8) * (densityBands.length - 1))
+  return Math.round((weightedDensity / 8) * (densityBands.length - 1));
 }
 
 function getAnimatedCharacter(
@@ -359,9 +371,10 @@ function getAnimatedCharacter(
   columnIndex: number,
   wordIndex: number,
 ) {
-  const pool = densityBands[shadeBandIndex]
+  const pool = densityBands[shadeBandIndex];
   const baseIndex =
-    getNoiseSeed(0, rowIndex, globalOffset, columnIndex, wordIndex) % pool.length
+    getNoiseSeed(0, rowIndex, globalOffset, columnIndex, wordIndex) %
+    pool.length;
 
   const stateSeed = getNoiseSeed(
     1,
@@ -369,45 +382,46 @@ function getAnimatedCharacter(
     globalOffset,
     columnIndex,
     wordIndex,
-  )
-  const phaseOffset = stateSeed % (switchHoldTicks * pool.length)
-  const stateStep = Math.floor((tick + phaseOffset) / switchHoldTicks) % pool.length
+  );
+  const phaseOffset = stateSeed % (switchHoldTicks * pool.length);
+  const stateStep =
+    Math.floor((tick + phaseOffset) / switchHoldTicks) % pool.length;
 
-  return pool[(baseIndex + stateStep) % pool.length]
+  return pool[(baseIndex + stateStep) % pool.length];
 }
 
 function renderWordmark(text: string, tick: number) {
-  const words = text.split(' ').filter(Boolean)
+  const words = text.split(" ").filter(Boolean);
 
   return words
     .map((word, wordIndex) => {
-      const rows: string[] = []
-      const sourceRowCount = glyphs[word[0]].length
+      const rows: string[] = [];
+      const sourceRowCount = glyphs[word[0]].length;
 
       for (let rowIndex = 0; rowIndex < targetRowCount; rowIndex += 1) {
         const sourceRowIndex = Math.round(
           (rowIndex * (sourceRowCount - 1)) / (targetRowCount - 1),
-        )
+        );
 
         const line = word
-          .split('')
+          .split("")
           .map((letter, letterIndex) => {
-            const glyph = glyphs[letter]
-            const glyphWidth = glyph[sourceRowIndex].length
-            const globalOffset = letterIndex * (glyphWidth + letterGap.length)
+            const glyph = glyphs[letter];
+            const glyphWidth = glyph[sourceRowIndex].length;
+            const globalOffset = letterIndex * (glyphWidth + letterGap.length);
 
             return glyph[sourceRowIndex]
-              .split('')
+              .split("")
               .map((pixel, columnIndex) => {
-                if (pixel === '0') {
-                  return ' '
+                if (pixel === "0") {
+                  return " ";
                 }
 
                 const shadeBandIndex = getShadeBandIndex(
                   glyph,
                   sourceRowIndex,
                   columnIndex,
-                )
+                );
 
                 return getAnimatedCharacter(
                   shadeBandIndex,
@@ -416,61 +430,61 @@ function renderWordmark(text: string, tick: number) {
                   globalOffset,
                   columnIndex,
                   wordIndex,
-                )
+                );
               })
-              .join('')
+              .join("");
           })
-          .join(letterGap)
+          .join(letterGap);
 
-        rows.push(line)
+        rows.push(line);
       }
 
-      return rows.join('\n')
+      return rows.join("\n");
     })
-    .join(wordGap)
+    .join(wordGap);
 }
 
 function App() {
-  const shouldReduceMotion = prefersReducedMotion()
-  const [animationTick, setAnimationTick] = useState(0)
-  const [isDark, setIsDark] = useState(getPreferredTheme)
-  const [expandedProject, setExpandedProject] = useState<string | null>(null)
+  const shouldReduceMotion = prefersReducedMotion();
+  const [animationTick, setAnimationTick] = useState(0);
+  const [isDark, setIsDark] = useState(getPreferredTheme);
+  const [expandedProject, setExpandedProject] = useState<string | null>(null);
   const [revealedContextLength, setRevealedContextLength] = useState(() =>
     shouldReduceMotion ? maxCurrentContextLength : 0,
-  )
+  );
   const visibleContextLength = shouldReduceMotion
     ? maxCurrentContextLength
-    : revealedContextLength
+    : revealedContextLength;
   const isProjectDirectoryVisible =
-    shouldReduceMotion || visibleContextLength >= maxCurrentContextLength
+    shouldReduceMotion || visibleContextLength >= maxCurrentContextLength;
 
   const advanceBrush = useEffectEvent(() => {
     startTransition(() => {
-      setAnimationTick((tick) => tick + 1)
-    })
-  })
+      setAnimationTick((tick) => tick + 1);
+    });
+  });
 
   useEffect(() => {
     if (shouldReduceMotion) {
-      return undefined
+      return undefined;
     }
 
     const intervalId = window.setInterval(() => {
-      advanceBrush()
-    }, animationIntervalMs)
+      advanceBrush();
+    }, animationIntervalMs);
 
     return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [shouldReduceMotion])
+      window.clearInterval(intervalId);
+    };
+  }, [shouldReduceMotion]);
 
   useEffect(() => {
     if (shouldReduceMotion) {
-      return undefined
+      return undefined;
     }
 
     if (revealedContextLength >= maxCurrentContextLength) {
-      return undefined
+      return undefined;
     }
 
     const timeoutId = window.setTimeout(() => {
@@ -479,22 +493,22 @@ function App() {
           currentLength + currentContextTypingStep,
           maxCurrentContextLength,
         ),
-      )
-    }, currentContextTypingIntervalMs)
+      );
+    }, currentContextTypingIntervalMs);
 
     return () => {
-      window.clearTimeout(timeoutId)
-    }
-  }, [revealedContextLength, shouldReduceMotion])
+      window.clearTimeout(timeoutId);
+    };
+  }, [revealedContextLength, shouldReduceMotion]);
 
   useEffect(() => {
-    const root = document.documentElement
+    const root = document.documentElement;
 
-    root.classList.toggle('dark', isDark)
-    window.localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light')
-  }, [isDark])
+    root.classList.toggle("dark", isDark);
+    window.localStorage.setItem(themeStorageKey, isDark ? "dark" : "light");
+  }, [isDark]);
 
-  const asciiName = renderWordmark(name, animationTick)
+  const asciiName = renderWordmark(name, animationTick);
 
   return (
     <main className="landing">
@@ -503,14 +517,14 @@ function App() {
           <a
             key={link.label}
             className={`social-links__link${
-              link.kind === 'smiley' ? ' social-links__link--with-tooltip' : ''
+              link.kind === "smiley" ? " social-links__link--with-tooltip" : ""
             }`}
             href={link.href}
             target="_blank"
             rel="noreferrer"
             aria-label={link.label}
           >
-            {link.kind === 'image' ? (
+            {link.kind === "image" ? (
               <img
                 className="social-links__icon"
                 src={isDark ? link.darkIcon : link.lightIcon}
@@ -547,7 +561,7 @@ function App() {
                 />
               </svg>
             )}
-            {link.kind === 'smiley' ? (
+            {link.kind === "smiley" ? (
               <span className="social-links__tooltip" aria-hidden="true">
                 a non-software creation
               </span>
@@ -558,10 +572,10 @@ function App() {
       <button
         type="button"
         className="theme-toggle"
-        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={isDark}
         onClick={() => {
-          setIsDark((currentTheme) => !currentTheme)
+          setIsDark((currentTheme) => !currentTheme);
         }}
       >
         <span className="theme-toggle__icon" aria-hidden="true">
@@ -610,7 +624,9 @@ function App() {
           Donovan Liao
         </h1>
         <div className="hero__left">
-          <pre className="name-mark" aria-hidden="true">{asciiName}</pre>
+          <pre className="name-mark" aria-hidden="true">
+            {asciiName}
+          </pre>
           <section
             className="current-context"
             aria-labelledby="current-context-title"
@@ -620,7 +636,7 @@ function App() {
             </h2>
             <ul className="current-context__list">
               {currentContextItems.map((item) => {
-                const isTyping = visibleContextLength < item.length
+                const isTyping = visibleContextLength < item.length;
 
                 return (
                   <li key={item} className="current-context__item">
@@ -628,13 +644,13 @@ function App() {
                     <span
                       aria-hidden="true"
                       className={`current-context__text${
-                        isTyping ? ' current-context__text--typing' : ''
+                        isTyping ? " current-context__text--typing" : ""
                       }`}
                     >
                       {item.slice(0, visibleContextLength)}
                     </span>
                   </li>
-                )
+                );
               })}
             </ul>
           </section>
@@ -658,10 +674,15 @@ function App() {
                   >
                     <div className="project-directory__header">
                       <AccordionTrigger className="project-directory__trigger">
-                        <span className="project-directory__caret" aria-hidden="true">
-                          {'>'}
+                        <span
+                          className="project-directory__caret"
+                          aria-hidden="true"
+                        >
+                          {">"}
                         </span>
-                        <span className="project-directory__name">{project.name}</span>
+                        <span className="project-directory__name">
+                          {project.name}
+                        </span>
                       </AccordionTrigger>
                       {project.repoHref ? (
                         <a
@@ -687,7 +708,7 @@ function App() {
                               {project.description}
                               {project.descriptionSuffixLink ? (
                                 <>
-                                  {' '}
+                                  {" "}
                                   <a
                                     className="project-directory__description-suffix-link"
                                     href={project.descriptionSuffixLink.href}
@@ -703,7 +724,7 @@ function App() {
                           {project.demo ? (
                             <div className="project-directory__field project-directory__field--demo">
                               <dd className="project-directory__field-value project-directory__field-value--demo">
-                                {project.demo.type === 'link' ? (
+                                {project.demo.type === "link" ? (
                                   <a
                                     className="project-directory__demo"
                                     href={project.demo.href}
@@ -712,7 +733,7 @@ function App() {
                                   >
                                     {project.demo.label}
                                   </a>
-                                ) : project.demo.type === 'embed' ? (
+                                ) : project.demo.type === "embed" ? (
                                   <div className="project-directory__video-shell">
                                     <iframe
                                       className="project-directory__video"
@@ -735,7 +756,7 @@ function App() {
                             <dd className="project-directory__field-value">
                               <ul className="project-directory__stack-list">
                                 {project.stack
-                                  .split(',')
+                                  .split(",")
                                   .map((item) => item.trim())
                                   .filter(Boolean)
                                   .map((item) => (
@@ -760,7 +781,7 @@ function App() {
         ) : null}
       </section>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
