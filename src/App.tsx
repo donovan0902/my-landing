@@ -253,6 +253,13 @@ const projectDirectories: ProjectDirectory[] = [
     stack: "Angular, Go, Bubble.io",
   },
   {
+    name: "aims",
+    repoHref: "https://github.com/omptl1/AIMS",
+    description:
+      "Won first place in annual Ohio Hackathon with 240+ teams. Developed a program for interior mapping without relying on GPS or maps.",
+    stack: "Pillow, gTTS",
+  },
+  {
     name: "ipfs-share",
     description:
       "Built freshman year of high school so I could share photos and videos with relatives in China who deal with restrictive online censorship. Global file-sharing site built on the IPFS API: users upload to nodes worldwide and get a shareable link for photos and other media.",
