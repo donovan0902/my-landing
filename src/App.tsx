@@ -210,7 +210,7 @@ const projectDirectories: ProjectDirectory[] = [
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >150 users internally. Public facing demo w/mock data:",
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >170 users internally. Public facing demo w/mock data:",
     descriptionSuffixLink: {
       label: "projectgarden.dev",
       href: "https://projectgarden.dev",
@@ -250,7 +250,7 @@ const projectDirectories: ProjectDirectory[] = [
       title: "Binder demo video",
       src: "https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo",
     },
-    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Heroku",
+    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Stripe, Heroku",
   },
   {
     name: "pryva",
@@ -262,6 +262,13 @@ const projectDirectories: ProjectDirectory[] = [
       src: pitchDeckPdf,
     },
     stack: "Angular, Go, Bubble.io",
+  },
+  {
+    name: "aims",
+    repoHref: "https://github.com/omptl1/AIMS",
+    description:
+      "Won first place in annual Ohio Hackathon with 240+ teams. Developed a program for interior mapping without relying on GPS or maps.",
+    stack: "Pillow, gTTS",
   },
   {
     name: "ipfs-share",
