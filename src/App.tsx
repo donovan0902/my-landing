@@ -196,6 +196,17 @@ const socialLinks: SocialLink[] = [
 
 const projectDirectories: ProjectDirectory[] = [
   {
+    name: "surveyhero",
+    repoHref: "https://github.com/donovan0902/surveyhero",
+    description:
+      "A survey building platform that lets respondents have a conversation with a voice agent instead of filling out a static form. Built with Next.js, Convex, and ElevenLabs. (Continuation of surveyhuman into fully functioning product). Check it out:",
+    descriptionSuffixLink: {
+      label: "surveyhero.vercel.app",
+      href: "https://surveyhero.vercel.app",
+    },
+    stack: "Next.js, Convex, ElevenLabs, WorkOS",
+  },
+  {
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
     description:
