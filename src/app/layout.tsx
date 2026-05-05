@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Average, Open_Sans } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import '../index.css';
 
 const average = Average({ subsets: ['latin'], weight: '400', variable: '--font-average' });
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" className={`${average.variable} ${openSans.variable}`}>
       <body>
         <div id="root">{children}</div>
+        <Analytics />
       </body>
     </html>
   );
