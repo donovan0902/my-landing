@@ -3,11 +3,13 @@ import {
   startTransition,
   useEffect,
   useEffectEvent,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
   type PointerEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   fetchGithubContributions,
   type GithubContributions,
@@ -98,7 +100,9 @@ function isBeforeDate(date: string, targetDate: string) {
 
 export function ContributionHeatmap() {
   const heatmapRef = useRef<HTMLElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const activeTooltipLabelRef = useRef<string | null>(null);
+  const lastPointerPositionRef = useRef({ x: 0, y: 0 });
   const [state, setState] = useState<ContributionHeatmapState>({
     status: "loading",
     data: null,
@@ -106,6 +110,7 @@ export function ContributionHeatmap() {
   const [activeTooltipLabel, setActiveTooltipLabel] = useState<string | null>(
     null,
   );
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   const loadContributions = useEffectEvent((signal: AbortSignal) => {
     fetchGithubContributions(signal)
@@ -148,6 +153,35 @@ export function ContributionHeatmap() {
       ? "1 contribution"
       : `${data?.totalContributions ?? 0} contributions`;
 
+  function getClampedTooltipPosition(x: number, y: number) {
+    const tooltip = tooltipRef.current;
+    const margin = 12;
+    const verticalOffset = 8;
+    const tooltipWidth = tooltip?.offsetWidth ?? 0;
+    const tooltipHeight = tooltip?.offsetHeight ?? 0;
+    const minX = margin + tooltipWidth / 2;
+    const maxX = window.innerWidth - margin - tooltipWidth / 2;
+    const clampedX =
+      minX > maxX
+        ? window.innerWidth / 2
+        : Math.min(Math.max(x, minX), maxX);
+    const minY = margin + tooltipHeight + verticalOffset;
+
+    return {
+      x: clampedX,
+      y: Math.max(y, minY),
+    };
+  }
+
+  function updateTooltipPosition(x: number, y: number) {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    lastPointerPositionRef.current = { x, y };
+    setTooltipPosition(getClampedTooltipPosition(x, y));
+  }
+
   function clearTooltip() {
     if (!activeTooltipLabelRef.current) {
       return;
@@ -155,25 +189,6 @@ export function ContributionHeatmap() {
 
     activeTooltipLabelRef.current = null;
     setActiveTooltipLabel(null);
-  }
-
-  function positionTooltip(event: PointerEvent<HTMLDivElement>) {
-    const heatmap = heatmapRef.current;
-
-    if (!heatmap) {
-      return;
-    }
-
-    const bounds = heatmap.getBoundingClientRect();
-
-    heatmap.style.setProperty(
-      "--heatmap-tooltip-x",
-      `${event.clientX - bounds.left}px`,
-    );
-    heatmap.style.setProperty(
-      "--heatmap-tooltip-y",
-      `${event.clientY - bounds.top}px`,
-    );
   }
 
   function handleGridPointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -205,7 +220,7 @@ export function ContributionHeatmap() {
       return;
     }
 
-    positionTooltip(event);
+    updateTooltipPosition(event.clientX, event.clientY);
 
     if (activeTooltipLabelRef.current === nextLabel) {
       return;
@@ -214,6 +229,15 @@ export function ContributionHeatmap() {
     activeTooltipLabelRef.current = nextLabel;
     setActiveTooltipLabel(nextLabel);
   }
+
+  useLayoutEffect(() => {
+    if (!activeTooltipLabel || typeof window === "undefined") {
+      return;
+    }
+
+    const { x, y } = lastPointerPositionRef.current;
+    setTooltipPosition(getClampedTooltipPosition(x, y));
+  }, [activeTooltipLabel]);
 
   return (
     <section
@@ -295,11 +319,24 @@ export function ContributionHeatmap() {
         </div>
       </div>
 
-      {activeTooltipLabel ? (
-        <div className="contribution-heatmap__tooltip" aria-hidden="true">
-          {activeTooltipLabel}
-        </div>
-      ) : null}
+      {activeTooltipLabel && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              ref={tooltipRef}
+              className="contribution-heatmap__tooltip"
+              style={
+                {
+                  "--heatmap-tooltip-x": `${tooltipPosition.x}px`,
+                  "--heatmap-tooltip-y": `${tooltipPosition.y}px`,
+                } as CSSProperties
+              }
+              aria-hidden="true"
+            >
+              {activeTooltipLabel}
+            </div>,
+            document.body,
+          )
+        : null}
     </section>
   );
 }

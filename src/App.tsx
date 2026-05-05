@@ -288,7 +288,7 @@ const projectDirectories: ProjectDirectory[] = [
 
 function getPreferredTheme() {
   if (typeof window === "undefined") {
-    return false;
+    return true;
   }
 
   const storedTheme = window.localStorage.getItem(themeStorageKey);
@@ -301,7 +301,7 @@ function getPreferredTheme() {
     return false;
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return true;
 }
 
 function prefersReducedMotion() {
@@ -468,7 +468,7 @@ function renderWordmark(text: string, tick: number) {
 function App() {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [animationTick, setAnimationTick] = useState(0);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
   const [expandedProject, setExpandedProject] = useState("");
   const [revealedContextLength, setRevealedContextLength] = useState(() =>
     shouldReduceMotion ? maxCurrentContextLength : 0,
