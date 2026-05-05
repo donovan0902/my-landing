@@ -1,4 +1,5 @@
 import {
+  Fragment,
   startTransition,
   useEffect,
   useEffectEvent,
@@ -10,6 +11,12 @@ import {
   type GithubContributions,
   type ContributionDay,
 } from "@/lib/githubContributions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type ContributionHeatmapState =
   | {
@@ -87,8 +94,10 @@ function isBeforeDate(date: string, targetDate: string) {
     return false;
   }
 
-  return Date.parse(`${date}T00:00:00.000Z`) <
-    Date.parse(`${targetDate}T00:00:00.000Z`);
+  return (
+    Date.parse(`${date}T00:00:00.000Z`) <
+    Date.parse(`${targetDate}T00:00:00.000Z`)
+  );
 }
 
 export function ContributionHeatmap() {
@@ -173,57 +182,51 @@ export function ContributionHeatmap() {
             ))}
           </div>
 
-          <div
-            className="contribution-heatmap__grid"
-            aria-label={
-              data
-                ? `${totalLabel} from ${formatDisplayDate(data.from.slice(0, 10))} to ${formatDisplayDate(data.to.slice(0, 10))}`
-                : "GitHub contribution heatmap data is not available yet"
-            }
-          >
-            {weeks.map((week, weekIndex) => (
-              <div
-                key={week.firstDay || `empty-week-${weekIndex}`}
-                className="contribution-heatmap__week"
-              >
-                {week.contributionDays.map((day) => {
-                  return (
-                    <span
-                      key={day.date || `empty-day-${weekIndex}-${day.weekday}`}
-                      className="contribution-heatmap__day"
-                      style={
-                        {
-                          "--contribution-color": getContributionColor(day),
-                        } as CSSProperties
-                      }
-                      title={day.date ? getDayLabel(day) : undefined}
-                      aria-label={day.date ? getDayLabel(day) : undefined}
-                    />
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
+          <TooltipProvider>
+            <div
+              className="contribution-heatmap__grid"
+              aria-label={
+                data
+                  ? `${totalLabel} from ${formatDisplayDate(data.from.slice(0, 10))} to ${formatDisplayDate(data.to.slice(0, 10))}`
+                  : "GitHub contribution heatmap data is not available yet"
+              }
+            >
+              {weeks.map((week, weekIndex) => (
+                <div
+                  key={week.firstDay || `empty-week-${weekIndex}`}
+                  className="contribution-heatmap__week"
+                >
+                  {week.contributionDays.map((day) => {
+                    const cellKey =
+                      day.date || `empty-day-${weekIndex}-${day.weekday}`;
+                    const dayLabel = day.date ? getDayLabel(day) : undefined;
+                    const dayCell = (
+                      <span
+                        className="contribution-heatmap__day"
+                        style={
+                          {
+                            "--contribution-color": getContributionColor(day),
+                          } as CSSProperties
+                        }
+                        aria-label={dayLabel}
+                      />
+                    );
 
-        <div className="contribution-heatmap__footer">
-          <p className="contribution-heatmap__status">
-            {state.status === "loading"
-              ? "Loading activity..."
-              : state.status === "ready"
-                ? `Generated ${formatDisplayDate(data?.generatedAt.slice(0, 10) ?? "")}`
-                : "Run npm run contributions:fetch with a GitHub token to generate this data."}
-          </p>
-          <div className="contribution-heatmap__legend" aria-hidden="true">
-            <span>Less</span>
-            {[0, 1, 2, 3, 4].map((level) => (
-              <span
-                key={level}
-                className={`contribution-heatmap__legend-cell contribution-heatmap__legend-cell--${level}`}
-              />
-            ))}
-            <span>More</span>
-          </div>
+                    if (!dayLabel) {
+                      return <Fragment key={cellKey}>{dayCell}</Fragment>;
+                    }
+
+                    return (
+                      <Tooltip key={cellKey}>
+                        <TooltipTrigger asChild>{dayCell}</TooltipTrigger>
+                        <TooltipContent>{dayLabel}</TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </TooltipProvider>
         </div>
       </div>
     </section>

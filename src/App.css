@@ -460,6 +460,8 @@
 }
 
 .project-directory {
+  position: relative;
+  z-index: 2;
   width: 100%;
   min-width: 0;
   color: var(--ink);
@@ -486,12 +488,14 @@
     black var(--project-directory-seam-feather),
     black 100%
   );
+  pointer-events: none;
 }
 
 .project-directory__inner {
   opacity: 0;
   transform: translateX(calc(var(--project-directory-enter-distance) * -1));
   animation: project-directory-reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  pointer-events: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
