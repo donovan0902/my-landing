@@ -347,7 +347,8 @@
   padding-right: var(--heatmap-label-end-space);
   font-family: var(--display-mono);
   font-size: 0.58rem;
-  opacity: 0.58;
+  color: color-mix(in srgb, var(--ink) 82%, #172033 18%);
+  opacity: 0.78;
 }
 
 .contribution-heatmap__month {
@@ -372,7 +373,8 @@
   font-family: var(--display-mono);
   font-size: 0.56rem;
   line-height: var(--heatmap-cell-size);
-  opacity: 0.52;
+  color: color-mix(in srgb, var(--ink) 82%, #172033 18%);
+  opacity: 0.78;
 }
 
 .contribution-heatmap__grid {
