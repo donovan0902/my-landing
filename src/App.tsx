@@ -213,7 +213,7 @@ const projectDirectories: ProjectDirectory[] = [
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >200 users internally. Public facing demo w/mock data:",
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >220 users internally. Public facing demo w/mock data:",
     descriptionSuffixLink: {
       label: "projectgarden.dev",
       href: "https://projectgarden.dev",
