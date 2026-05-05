@@ -1,75 +1,42 @@
 # my-landing
 
-Personal landing site. Built with React + TypeScript + Vite.
+Personal landing site. Built with React + TypeScript + Next.js (App Router).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Develop
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:3000.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Set `GH_TOKEN` in `.env.local` for the contribution heatmap to work locally:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+GH_TOKEN=your_token npm run dev
+# or add GH_TOKEN=your_token to .env.local
 ```
+
+## Build
+
+```sh
+npm run build
+```
+
+## Deploy (Vercel)
+
+Set `GH_TOKEN` (or `GITHUB_TOKEN`) in Vercel project environment variables (Production + Preview). The heatmap data is fetched server-side at request time and cached for 1 hour — no pre-build step needed.
+
+Use a token with `read:user` if private contribution counts should be included.
+
+## GitHub contribution heatmap
+
+The heatmap is powered by `GET /api/contributions` — a Next.js route handler that calls the GitHub GraphQL API using `GH_TOKEN` from the server environment. The token is never exposed to the browser.
+
+A fallback pre-build script is still available for local dev without a token:
+
+```sh
+GH_TOKEN=your_token npm run contributions:fetch
+```
+
+This writes `public/github-contributions.json`. The dev server will serve it as a fallback if you temporarily point the fetch URL back to that file, but it is not used in production.

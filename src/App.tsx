@@ -1,15 +1,16 @@
 import { startTransition, useEffect, useEffectEvent, useState } from "react";
+import Image, { type StaticImageData } from "next/image";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ContributionHeatmap } from "@/components/ContributionHeatmap";
 import githubIconBlack from "./assets/GitHub_Invertocat_Black.png";
 import githubIconWhite from "./assets/GitHub_Invertocat_White.png";
 import linkedInIconBlack from "./assets/InBug-Black.png";
 import linkedInIconWhite from "./assets/InBug-White.png";
-import pitchDeckPdf from "./assets/Pitch Deck.pdf";
 import "./App.css";
 
 type ProjectDirectory = {
@@ -163,8 +164,8 @@ type SocialLink =
       label: string;
       href: string;
       kind: "image";
-      lightIcon: string;
-      darkIcon: string;
+      lightIcon: StaticImageData;
+      darkIcon: StaticImageData;
     }
   | {
       label: string;
@@ -259,7 +260,7 @@ const projectDirectories: ProjectDirectory[] = [
     demo: {
       type: "embed",
       title: "Pryva pitch deck",
-      src: pitchDeckPdf,
+      src: "/pitch-deck.pdf",
     },
     stack: "Angular, Go, Bubble.io",
   },
@@ -543,7 +544,7 @@ function App() {
             aria-label={link.label}
           >
             {link.kind === "image" ? (
-              <img
+              <Image
                 className="social-links__icon"
                 src={isDark ? link.darkIcon : link.lightIcon}
                 alt=""
@@ -672,6 +673,7 @@ function App() {
               })}
             </ul>
           </section>
+          {isProjectDirectoryVisible ? <ContributionHeatmap /> : null}
         </div>
         {isProjectDirectoryVisible ? (
           <div className="project-directory" aria-label="Projects">
@@ -710,7 +712,7 @@ function App() {
                           rel="noreferrer"
                           aria-label={`View ${project.name} repository on GitHub`}
                         >
-                          <img
+                          <Image
                             className="project-directory__repo-icon"
                             src={isDark ? githubIconWhite : githubIconBlack}
                             alt=""

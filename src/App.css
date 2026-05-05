@@ -235,7 +235,7 @@
 }
 
 .current-context__item {
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
@@ -248,6 +248,235 @@
   content: '|';
   opacity: 0.7;
   animation: current-context-caret 1000ms steps(1, end) infinite;
+}
+
+.contribution-heatmap {
+  width: min(100%, 35rem);
+  color: var(--ink);
+  font-family: 'Figtree Variable', sans-serif;
+  opacity: 0;
+  transform: translateY(0.7rem);
+  animation: contribution-heatmap-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1)
+    120ms both;
+}
+
+.contribution-heatmap__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.contribution-heatmap__eyebrow,
+.contribution-heatmap__title,
+.contribution-heatmap__status {
+  margin: 0;
+}
+
+.contribution-heatmap__eyebrow {
+  font-family: var(--display-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.contribution-heatmap__title {
+  margin-top: 0.16rem;
+  font-family: var(--font-average), serif;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.contribution-heatmap__profile-link {
+  flex-shrink: 0;
+  color: inherit;
+  font-family: var(--display-mono);
+  font-size: 0.74rem;
+  text-decoration: none;
+  opacity: 0.65;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.contribution-heatmap__profile-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.contribution-heatmap__profile-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: 0.2rem;
+}
+
+.contribution-heatmap__panel {
+  --heatmap-cell-size: clamp(0.46rem, 1vw, 0.62rem);
+  --heatmap-cell-gap: clamp(0.11rem, 0.24vw, 0.17rem);
+  --heatmap-empty: color-mix(in srgb, var(--ink) 7%, transparent);
+  --heatmap-border: color-mix(in srgb, var(--ink) 14%, transparent);
+  --heatmap-glow: color-mix(in srgb, var(--ink) 8%, transparent);
+  padding: clamp(0.75rem, 2vw, 1rem);
+  border: 1px solid var(--heatmap-border);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(
+      circle at 8% 10%,
+      color-mix(in srgb, var(--ink) 8%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--page-bg) 90%, white 10%),
+      color-mix(in srgb, var(--page-bg) 96%, var(--ink) 4%)
+    );
+  box-shadow: 0 1rem 2.4rem -2rem var(--heatmap-glow);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.dark .contribution-heatmap__panel {
+  background:
+    radial-gradient(
+      circle at 8% 10%,
+      color-mix(in srgb, var(--ink) 8%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--page-bg) 88%, black 12%),
+      color-mix(in srgb, var(--page-bg) 95%, var(--ink) 5%)
+    );
+}
+
+.contribution-heatmap__panel--unavailable .contribution-heatmap__day {
+  opacity: 0.42;
+}
+
+.contribution-heatmap__months {
+  display: grid;
+  grid-template-columns: repeat(53, var(--heatmap-cell-size));
+  gap: var(--heatmap-cell-gap);
+  min-width: max-content;
+  margin-left: 2.15rem;
+  margin-bottom: 0.35rem;
+  font-family: var(--display-mono);
+  font-size: 0.58rem;
+  opacity: 0.58;
+}
+
+.contribution-heatmap__month {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.contribution-heatmap__body {
+  display: flex;
+  align-items: start;
+  gap: 0.45rem;
+  min-width: max-content;
+}
+
+.contribution-heatmap__weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, var(--heatmap-cell-size));
+  gap: var(--heatmap-cell-gap);
+  width: 1.7rem;
+  flex-shrink: 0;
+  font-family: var(--display-mono);
+  font-size: 0.56rem;
+  line-height: var(--heatmap-cell-size);
+  opacity: 0.52;
+}
+
+.contribution-heatmap__grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--heatmap-cell-size);
+  gap: var(--heatmap-cell-gap);
+}
+
+.contribution-heatmap__week {
+  display: grid;
+  grid-template-rows: repeat(7, var(--heatmap-cell-size));
+  gap: var(--heatmap-cell-gap);
+}
+
+.contribution-heatmap__day {
+  display: block;
+  width: var(--heatmap-cell-size);
+  height: var(--heatmap-cell-size);
+  border-radius: 0.15rem;
+  background: var(--contribution-color, var(--heatmap-empty));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.contribution-heatmap__day:hover {
+  transform: translateY(-1px) scale(1.12);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white 24%, transparent),
+    0 0.35rem 0.8rem color-mix(in srgb, var(--ink) 16%, transparent);
+}
+
+.contribution-heatmap__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: max-content;
+  margin-top: 0.65rem;
+}
+
+.contribution-heatmap__status {
+  max-width: 22rem;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  opacity: 0.62;
+}
+
+.contribution-heatmap__legend {
+  display: flex;
+  align-items: center;
+  gap: 0.24rem;
+  font-family: var(--display-mono);
+  font-size: 0.58rem;
+  opacity: 0.58;
+}
+
+.contribution-heatmap__legend-cell {
+  display: block;
+  width: var(--heatmap-cell-size);
+  height: var(--heatmap-cell-size);
+  border-radius: 0.14rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.contribution-heatmap__legend-cell--0 {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.contribution-heatmap__legend-cell--1 {
+  background: #9be9a8;
+}
+
+.contribution-heatmap__legend-cell--2 {
+  background: #40c463;
+}
+
+.contribution-heatmap__legend-cell--3 {
+  background: #30a14e;
+}
+
+.contribution-heatmap__legend-cell--4 {
+  background: #216e39;
 }
 
 .project-directory {
@@ -293,7 +522,7 @@
 
 .project-directory__label {
   margin: 0 0 0.9rem;
-  font-family: 'Average', serif;
+  font-family: var(--font-average), serif;
   font-size: clamp(1.4rem, 3vw, 1.85rem);
   font-style: normal;
   font-weight: 400;
@@ -366,7 +595,7 @@
 
 .project-directory__name {
   min-width: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
@@ -450,7 +679,7 @@
 }
 
 .project-directory__field-value--description {
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
@@ -589,6 +818,18 @@
   }
 }
 
+@keyframes contribution-heatmap-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.7rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes current-context-caret {
   0%,
   49% {
@@ -631,6 +872,21 @@
 
   .current-context {
     margin-bottom: 1rem;
+  }
+
+  .contribution-heatmap {
+    width: 100%;
+  }
+
+  .contribution-heatmap__header {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .contribution-heatmap__panel {
+    --heatmap-cell-size: 0.52rem;
+    --heatmap-cell-gap: 0.14rem;
   }
 
   .social-links {
