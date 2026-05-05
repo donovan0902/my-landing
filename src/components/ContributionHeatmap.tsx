@@ -32,6 +32,7 @@ type ContributionHeatmapState =
 
 const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const visibleWeekdayIndexes = new Set([1, 3, 5]);
+const tooltipFadeOutMs = 220;
 const emptyWeeks = Array.from({ length: 53 }, () => ({
   firstDay: "",
   contributionDays: Array.from({ length: 7 }, (_, weekday) => ({
@@ -64,12 +65,15 @@ function getDayLabel(day: ContributionDay) {
   return `${countLabel} on ${formatDisplayDate(day.date)}`;
 }
 
-function getContributionColor(day: ContributionDay) {
+function getContributionColor(
+  day: ContributionDay,
+  invertedColorScale: Map<string, string>,
+) {
   if (day.contributionCount === 0) {
     return "var(--heatmap-empty)";
   }
 
-  return day.color;
+  return invertedColorScale.get(day.color) ?? day.color;
 }
 
 function getWeekOffset(startDate: string, targetDate: string) {
@@ -102,7 +106,8 @@ export function ContributionHeatmap() {
   const heatmapRef = useRef<HTMLElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const activeTooltipLabelRef = useRef<string | null>(null);
-  const lastPointerPositionRef = useRef({ x: 0, y: 0 });
+  const lastTooltipAnchorRef = useRef({ x: 0, y: 0 });
+  const tooltipFadeOutTimeoutRef = useRef<number | null>(null);
   const [state, setState] = useState<ContributionHeatmapState>({
     status: "loading",
     data: null,
@@ -110,6 +115,7 @@ export function ContributionHeatmap() {
   const [activeTooltipLabel, setActiveTooltipLabel] = useState<string | null>(
     null,
   );
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   const loadContributions = useEffectEvent((signal: AbortSignal) => {
@@ -140,9 +146,24 @@ export function ContributionHeatmap() {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (tooltipFadeOutTimeoutRef.current) {
+        window.clearTimeout(tooltipFadeOutTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const data = state.data;
   const weeks = data?.weeks ?? emptyWeeks;
   const monthLabels = data?.months ?? [];
+  const contributionColors = data?.colors ?? [];
+  const invertedColorScale = new Map(
+    contributionColors.map((color, index) => [
+      color,
+      contributionColors[contributionColors.length - 1 - index],
+    ]),
+  );
   const calendarStart = weeks[0]?.firstDay ?? "";
   const visibleMonthLabels = monthLabels.filter(
     (month) => !isBeforeDate(month.firstDay, calendarStart),
@@ -173,13 +194,19 @@ export function ContributionHeatmap() {
     };
   }
 
-  function updateTooltipPosition(x: number, y: number) {
+  function updateTooltipPosition(tooltipTarget: HTMLElement) {
     if (typeof window === "undefined") {
       return;
     }
 
-    lastPointerPositionRef.current = { x, y };
-    setTooltipPosition(getClampedTooltipPosition(x, y));
+    const bounds = tooltipTarget.getBoundingClientRect();
+    const nextAnchor = {
+      x: bounds.left + bounds.width / 2,
+      y: bounds.top,
+    };
+
+    lastTooltipAnchorRef.current = nextAnchor;
+    setTooltipPosition(getClampedTooltipPosition(nextAnchor.x, nextAnchor.y));
   }
 
   function clearTooltip() {
@@ -188,7 +215,16 @@ export function ContributionHeatmap() {
     }
 
     activeTooltipLabelRef.current = null;
-    setActiveTooltipLabel(null);
+    setIsTooltipVisible(false);
+
+    if (tooltipFadeOutTimeoutRef.current) {
+      window.clearTimeout(tooltipFadeOutTimeoutRef.current);
+    }
+
+    tooltipFadeOutTimeoutRef.current = window.setTimeout(() => {
+      tooltipFadeOutTimeoutRef.current = null;
+      setActiveTooltipLabel(null);
+    }, tooltipFadeOutMs);
   }
 
   function handleGridPointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -220,14 +256,20 @@ export function ContributionHeatmap() {
       return;
     }
 
-    updateTooltipPosition(event.clientX, event.clientY);
+    updateTooltipPosition(tooltipTarget);
 
     if (activeTooltipLabelRef.current === nextLabel) {
       return;
     }
 
+    if (tooltipFadeOutTimeoutRef.current) {
+      window.clearTimeout(tooltipFadeOutTimeoutRef.current);
+      tooltipFadeOutTimeoutRef.current = null;
+    }
+
     activeTooltipLabelRef.current = nextLabel;
     setActiveTooltipLabel(nextLabel);
+    setIsTooltipVisible(true);
   }
 
   useLayoutEffect(() => {
@@ -235,7 +277,7 @@ export function ContributionHeatmap() {
       return;
     }
 
-    const { x, y } = lastPointerPositionRef.current;
+    const { x, y } = lastTooltipAnchorRef.current;
     setTooltipPosition(getClampedTooltipPosition(x, y));
   }, [activeTooltipLabel]);
 
@@ -304,7 +346,10 @@ export function ContributionHeatmap() {
                       data-heatmap-tooltip={dayLabel}
                       style={
                         {
-                          "--contribution-color": getContributionColor(day),
+                          "--contribution-color": getContributionColor(
+                            day,
+                            invertedColorScale,
+                          ),
                         } as CSSProperties
                       }
                       aria-label={dayLabel}
@@ -323,7 +368,9 @@ export function ContributionHeatmap() {
         ? createPortal(
             <div
               ref={tooltipRef}
-              className="contribution-heatmap__tooltip"
+              className={`contribution-heatmap__tooltip${
+                isTooltipVisible ? " contribution-heatmap__tooltip--visible" : ""
+              }`}
               style={
                 {
                   "--heatmap-tooltip-x": `${tooltipPosition.x}px`,

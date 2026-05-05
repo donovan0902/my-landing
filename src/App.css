@@ -4,7 +4,9 @@
   place-items: center;
   --footer-icons-clearance: clamp(3rem, 5vw, 4.25rem);
   padding: clamp(1.5rem, 4vw, 4rem);
-  padding-bottom: calc(clamp(1.5rem, 4vw, 4rem) + var(--footer-icons-clearance));
+  padding-bottom: calc(
+    clamp(1.5rem, 4vw, 4rem) + var(--footer-icons-clearance)
+  );
   position: relative;
   isolation: isolate;
 }
@@ -81,7 +83,7 @@
   background: var(--background);
   color: var(--foreground);
   white-space: nowrap;
-  font-family: 'Figtree Variable', sans-serif;
+  font-family: "Figtree Variable", sans-serif;
   font-weight: 420;
   font-size: 0.72rem;
   line-height: 1;
@@ -239,13 +241,13 @@
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: 'wdth' 100;
+  font-variation-settings: "wdth" 100;
   font-weight: 330;
   line-height: 1.6;
 }
 
 .current-context__text--typing::after {
-  content: '|';
+  content: "|";
   opacity: 0.7;
   animation: current-context-caret 1000ms steps(1, end) infinite;
 }
@@ -254,7 +256,7 @@
   position: relative;
   width: min(100%, 35rem);
   color: var(--ink);
-  font-family: 'Figtree Variable', sans-serif;
+  font-family: "Figtree Variable", sans-serif;
   opacity: 0;
   transform: translateY(0.7rem);
   animation: contribution-heatmap-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1)
@@ -413,7 +415,7 @@
   left: var(--heatmap-tooltip-x, 50%);
   top: var(--heatmap-tooltip-y, 50%);
   z-index: 100;
-  transform: translate(-50%, calc(-100% - 0.5rem));
+  transform: translate(-50%, calc(-100% - 0.42rem));
   pointer-events: none;
   max-width: calc(100vw - 1.5rem);
   border-radius: 999px;
@@ -428,7 +430,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  opacity: 0;
   box-shadow: 0 0.45rem 1rem rgb(23 32 51 / 0.22);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.contribution-heatmap__tooltip--visible {
+  opacity: 1;
+  transform: translate(-50%, calc(-100% - 0.5rem));
 }
 
 .dark .contribution-heatmap__tooltip {
@@ -476,19 +487,19 @@
 }
 
 .contribution-heatmap__legend-cell--1 {
-  background: #9be9a8;
+  background: #216e39;
 }
 
 .contribution-heatmap__legend-cell--2 {
-  background: #40c463;
-}
-
-.contribution-heatmap__legend-cell--3 {
   background: #30a14e;
 }
 
+.contribution-heatmap__legend-cell--3 {
+  background: #40c463;
+}
+
 .contribution-heatmap__legend-cell--4 {
-  background: #216e39;
+  background: #9be9a8;
 }
 
 .project-directory {
@@ -604,7 +615,7 @@
   transform: translateY(-0.02em);
 }
 
-.project-directory__trigger[data-state='open'] .project-directory__caret {
+.project-directory__trigger[data-state="open"] .project-directory__caret {
   transform: translateY(-0.02em) rotate(90deg);
   opacity: 1;
 }
@@ -615,7 +626,7 @@
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: 'wdth' 100;
+  font-variation-settings: "wdth" 100;
   font-weight: 450;
   white-space: nowrap;
   overflow: hidden;
@@ -656,18 +667,20 @@
   overflow: hidden;
 }
 
-.project-directory__content[data-state='open'] {
+.project-directory__content[data-state="open"] {
   animation: project-directory-expand 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.project-directory__content[data-state='closed'] {
+.project-directory__content[data-state="closed"] {
   animation: project-directory-collapse 200ms cubic-bezier(0.4, 0, 1, 1);
 }
 
 .project-directory__panel {
-  margin: 0.45rem 0 0 calc(
-    var(--project-directory-caret-width) + var(--project-directory-trigger-gap)
-  );
+  margin: 0.45rem 0 0
+    calc(
+      var(--project-directory-caret-width) +
+        var(--project-directory-trigger-gap)
+    );
 }
 
 .project-directory__meta {
@@ -699,7 +712,7 @@
   font-size: 0.9rem;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: 'wdth' 100;
+  font-variation-settings: "wdth" 100;
   font-weight: 330;
   line-height: 1.65;
 }
@@ -730,7 +743,7 @@
 }
 
 .project-directory__field-value--demo {
-  font-family: 'Figtree Variable', sans-serif;
+  font-family: "Figtree Variable", sans-serif;
   font-size: 0.92rem;
   font-weight: 450;
   line-height: 1.5;
@@ -750,7 +763,7 @@
   border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
   border-radius: 0.3rem;
   background: color-mix(in srgb, var(--page-bg) 96%, var(--ink) 4%);
-  font-family: 'Figtree Variable', sans-serif;
+  font-family: "Figtree Variable", sans-serif;
   font-size: 0.76rem;
   font-weight: 420;
   line-height: 1.35;
@@ -759,7 +772,7 @@
 
 .project-directory__demo {
   color: color-mix(in srgb, var(--ink) 100%, transparent);
-  font-family: 'Figtree Variable', sans-serif;
+  font-family: "Figtree Variable", sans-serif;
   font-size: 0.92rem;
   font-weight: 450;
   text-decoration-thickness: 1px;
@@ -935,7 +948,8 @@
 
   .project-directory__panel {
     margin-left: calc(
-      var(--project-directory-caret-width) + var(--project-directory-trigger-gap)
+      var(--project-directory-caret-width) +
+        var(--project-directory-trigger-gap)
     );
   }
 }
