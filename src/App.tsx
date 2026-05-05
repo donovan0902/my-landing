@@ -1,3 +1,5 @@
+"use client";
+
 import { startTransition, useEffect, useEffectEvent, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import {
@@ -464,9 +466,9 @@ function renderWordmark(text: string, tick: number) {
 }
 
 function App() {
-  const shouldReduceMotion = prefersReducedMotion();
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [animationTick, setAnimationTick] = useState(0);
-  const [isDark, setIsDark] = useState(getPreferredTheme);
+  const [isDark, setIsDark] = useState(false);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
   const [revealedContextLength, setRevealedContextLength] = useState(() =>
     shouldReduceMotion ? maxCurrentContextLength : 0,
@@ -482,6 +484,19 @@ function App() {
       setAnimationTick((tick) => tick + 1);
     });
   });
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      startTransition(() => {
+        setShouldReduceMotion(prefersReducedMotion());
+        setIsDark(getPreferredTheme());
+      });
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     if (shouldReduceMotion) {

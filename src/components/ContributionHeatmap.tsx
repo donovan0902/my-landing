@@ -32,7 +32,7 @@ const emptyWeeks = Array.from({ length: 53 }, () => ({
   contributionDays: Array.from({ length: 7 }, (_, weekday) => ({
     date: "",
     contributionCount: 0,
-    color: "transparent",
+    color: "var(--heatmap-empty)",
     weekday,
   })),
 }));
@@ -52,9 +52,19 @@ function formatDisplayDate(date: string) {
 
 function getDayLabel(day: ContributionDay) {
   const countLabel =
-    day.contributionCount === 1 ? "1 contribution" : `${day.contributionCount} contributions`;
+    day.contributionCount === 1
+      ? "1 contribution"
+      : `${day.contributionCount} contributions`;
 
   return `${countLabel} on ${formatDisplayDate(day.date)}`;
+}
+
+function getContributionColor(day: ContributionDay) {
+  if (day.contributionCount === 0) {
+    return "var(--heatmap-empty)";
+  }
+
+  return day.color;
 }
 
 function getWeekOffset(startDate: string, targetDate: string) {
@@ -70,6 +80,15 @@ function getWeekOffset(startDate: string, targetDate: string) {
         604800000,
     ),
   );
+}
+
+function isBeforeDate(date: string, targetDate: string) {
+  if (!date || !targetDate) {
+    return false;
+  }
+
+  return Date.parse(`${date}T00:00:00.000Z`) <
+    Date.parse(`${targetDate}T00:00:00.000Z`);
 }
 
 export function ContributionHeatmap() {
@@ -110,6 +129,9 @@ export function ContributionHeatmap() {
   const weeks = data?.weeks ?? emptyWeeks;
   const monthLabels = data?.months ?? [];
   const calendarStart = weeks[0]?.firstDay ?? "";
+  const visibleMonthLabels = monthLabels.filter(
+    (month) => !isBeforeDate(month.firstDay, calendarStart),
+  );
   const isUnavailable = state.status === "error";
   const totalLabel =
     data && data.totalContributions === 1
@@ -118,30 +140,18 @@ export function ContributionHeatmap() {
 
   return (
     <section className="contribution-heatmap" aria-labelledby="activity-title">
-      <div className="contribution-heatmap__header">
-        <div>
-          <p className="contribution-heatmap__eyebrow">GitHub activity</p>
-          <h2 id="activity-title" className="contribution-heatmap__title">
-            {state.status === "ready" ? totalLabel : "Contribution signal"}
-          </h2>
-        </div>
-        <a
-          className="contribution-heatmap__profile-link"
-          href="https://github.com/donovan0902"
-          target="_blank"
-          rel="noreferrer"
-        >
-          @donovan0902
-        </a>
-      </div>
-
       <div
         className={`contribution-heatmap__panel${
           isUnavailable ? " contribution-heatmap__panel--unavailable" : ""
         }`}
+        style={
+          {
+            "--heatmap-week-count": weeks.length,
+          } as CSSProperties
+        }
       >
         <div className="contribution-heatmap__months" aria-hidden="true">
-          {monthLabels.map((month) => (
+          {visibleMonthLabels.map((month) => (
             <span
               key={`${month.year}-${month.name}-${month.firstDay}`}
               className="contribution-heatmap__month"
@@ -181,9 +191,11 @@ export function ContributionHeatmap() {
                     <span
                       key={day.date || `empty-day-${weekIndex}-${day.weekday}`}
                       className="contribution-heatmap__day"
-                      style={{
-                        "--contribution-color": day.color,
-                      } as CSSProperties}
+                      style={
+                        {
+                          "--contribution-color": getContributionColor(day),
+                        } as CSSProperties
+                      }
                       title={day.date ? getDayLabel(day) : undefined}
                       aria-label={day.date ? getDayLabel(day) : undefined}
                     />
