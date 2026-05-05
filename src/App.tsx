@@ -469,7 +469,7 @@ function App() {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [animationTick, setAnimationTick] = useState(0);
   const [isDark, setIsDark] = useState(false);
-  const [expandedProject, setExpandedProject] = useState<string | null>(null);
+  const [expandedProject, setExpandedProject] = useState("");
   const [revealedContextLength, setRevealedContextLength] = useState(() =>
     shouldReduceMotion ? maxCurrentContextLength : 0,
   );
@@ -698,8 +698,10 @@ function App() {
                 type="single"
                 collapsible
                 className="project-directory__list"
-                value={expandedProject ?? undefined}
-                onValueChange={setExpandedProject}
+                value={expandedProject}
+                onValueChange={(projectName) => {
+                  setExpandedProject(projectName);
+                }}
               >
                 {projectDirectories.map((project) => (
                   <AccordionItem
