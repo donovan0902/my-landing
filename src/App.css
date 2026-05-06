@@ -354,6 +354,7 @@
 }
 
 .contribution-heatmap__month {
+  grid-row: 1;
   justify-self: start;
   min-width: max-content;
   white-space: nowrap;
