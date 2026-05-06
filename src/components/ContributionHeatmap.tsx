@@ -303,7 +303,7 @@ export function ContributionHeatmap() {
               key={`${month.year}-${month.name}-${month.firstDay}`}
               className="contribution-heatmap__month"
               style={{
-                gridColumn: `${getWeekOffset(calendarStart, month.firstDay) + 1} / span ${month.totalWeeks}`,
+                gridColumn: getWeekOffset(calendarStart, month.firstDay) + 1,
               }}
             >
               {month.name.slice(0, 3)}
