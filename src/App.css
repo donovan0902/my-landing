@@ -893,6 +893,7 @@
   .hero {
     grid-template-columns: 1fr;
     gap: 1rem;
+    overflow-x: visible;
   }
 
   .hero__left {
@@ -917,6 +918,8 @@
   .contribution-heatmap__panel {
     --heatmap-cell-size: 0.52rem;
     --heatmap-cell-gap: 0.14rem;
+    overflow-x: auto;
+    touch-action: pan-x;
   }
 
   .social-links {
@@ -934,7 +937,7 @@
 
   .project-directory {
     order: 2;
-    margin-top: 0;
+    margin-top: 2rem;
     margin-bottom: 0.85rem;
     margin-inline-start: 0;
     padding-inline-start: 0;
