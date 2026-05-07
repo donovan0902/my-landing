@@ -213,7 +213,7 @@ const projectDirectories: ProjectDirectory[] = [
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. >300 users internally. Public facing demo w/mock data:",
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. 400+ users internally. Public facing demo w/mock data:",
     descriptionSuffixLink: {
       label: "projectgarden.dev",
       href: "https://projectgarden.dev",
@@ -253,7 +253,8 @@ const projectDirectories: ProjectDirectory[] = [
       title: "Binder demo video",
       src: "https://www.youtube.com/embed/2bw5VEtrB1I?si=qU7Y_mm6ig4PpOGo",
     },
-    stack: "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Stripe, Heroku",
+    stack:
+      "Next.js, Supabase, Flask, LangGraph, Langsmith, ElevenLabs, Stripe, Heroku",
   },
   {
     name: "pryva",

@@ -24,7 +24,7 @@
 /* Slightly wider projects column; clip offset below keeps alignment without eating width. */
 @media (min-width: 769px) {
   .hero {
-    gap: clamp(0.35rem, 1vw, 0.75rem);
+    gap: clamp(2.25rem, 4.5vw, 4.75rem);
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   }
 
@@ -255,6 +255,8 @@
 .contribution-heatmap {
   position: relative;
   width: min(100%, 35rem);
+  max-width: 100%;
+  min-width: 0;
   color: var(--ink);
   font-family: "Figtree Variable", sans-serif;
   opacity: 0;
@@ -328,8 +330,12 @@
   --heatmap-empty: color-mix(in srgb, var(--ink) 7%, transparent);
   padding: clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem)
     clamp(0.75rem, 2vw, 1rem) 0;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .contribution-heatmap__panel--unavailable .contribution-heatmap__day {
@@ -893,7 +899,6 @@
   .hero {
     grid-template-columns: 1fr;
     gap: 1rem;
-    overflow-x: visible;
   }
 
   .hero__left {
@@ -913,11 +918,13 @@
     align-items: start;
     flex-direction: column;
     gap: 0.35rem;
+    margin-bottom: 0;
   }
 
   .contribution-heatmap__panel {
     --heatmap-cell-size: 0.52rem;
     --heatmap-cell-gap: 0.14rem;
+    padding-top: 0;
     overflow-x: auto;
     touch-action: pan-x;
   }
