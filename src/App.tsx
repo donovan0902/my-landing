@@ -18,11 +18,9 @@ import "./App.css";
 type ProjectDirectory = {
   name: string;
   repoHref?: string;
+  siteHref?: string;
+  siteLabel?: string;
   description: string;
-  descriptionSuffixLink?: {
-    label: string;
-    href: string;
-  };
   demo?:
     | {
         type: "link";
@@ -201,23 +199,19 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: "surveyhero",
     repoHref: "https://github.com/donovan0902/surveyhero",
+    siteHref: "https://surveyhero.vercel.app",
+    siteLabel: "Visit surveyhero.vercel.app",
     description:
-      "A survey building platform that lets respondents have a conversation with a voice agent instead of filling out a static form. Built with Next.js, Convex, and ElevenLabs. (Continuation of surveyhuman into fully functioning product). Check it out:",
-    descriptionSuffixLink: {
-      label: "surveyhero.vercel.app",
-      href: "https://surveyhero.vercel.app",
-    },
+      "A survey building platform that lets respondents have a conversation with a voice agent instead of filling out a static form. Built with Next.js, Convex, and ElevenLabs. Continuation of SurveyHuman into a fully functioning product.",
     stack: "Next.js, Convex, ElevenLabs, WorkOS",
   },
   {
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
+    siteHref: "https://projectgarden.dev",
+    siteLabel: "Visit projectgarden.dev",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. 400+ users internally. Public facing demo w/mock data:",
-    descriptionSuffixLink: {
-      label: "projectgarden.dev",
-      href: "https://projectgarden.dev",
-    },
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and GitHub. 400+ internal users. The link for this project is a public-facing demo with mock data.",
     stack:
       "Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), NAT Gateway + Private Subnet (self-hosted github runner), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents",
   },
@@ -235,19 +229,19 @@ const projectDirectories: ProjectDirectory[] = [
   },
   {
     name: "qard",
+    siteHref: "https://qard.dev",
+    siteLabel: "Visit qard.dev",
     description:
       "A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for real-time automatic transaction routing.",
-    descriptionSuffixLink: {
-      label: "qard.dev",
-      href: "https://qard.dev",
-    },
     stack:
       "Flutter + Swift, Expressjs, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic",
   },
   {
     name: "binder",
+    siteHref: "https://binderstudio.org",
+    siteLabel: "Visit binderstudio.org",
     description:
-      "An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition.",
+      "My first real app with users (80+). An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition. Lesson generation can take a couple minutes; you can watch the demo if you don't feel like waiting.",
     demo: {
       type: "embed",
       title: "Binder demo video",
@@ -722,6 +716,46 @@ function App() {
                           {project.name}
                         </span>
                       </AccordionTrigger>
+                      {project.siteHref ? (
+                        <a
+                          className="project-directory__site-link"
+                          href={project.siteHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={
+                            project.siteLabel ?? `Visit ${project.name}`
+                          }
+                        >
+                          <svg
+                            className="project-directory__site-icon"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M6 3H13V10"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M13 3L4 12"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M11 13H3V5"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </a>
+                      ) : null}
                       {project.repoHref ? (
                         <a
                           className="project-directory__repo-link"
@@ -744,19 +778,6 @@ function App() {
                           <div className="project-directory__field project-directory__field--description">
                             <dd className="project-directory__field-value project-directory__field-value--description">
                               {project.description}
-                              {project.descriptionSuffixLink ? (
-                                <>
-                                  {" "}
-                                  <a
-                                    className="project-directory__description-suffix-link"
-                                    href={project.descriptionSuffixLink.href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {project.descriptionSuffixLink.label}
-                                  </a>
-                                </>
-                              ) : null}
                             </dd>
                           </div>
                           {project.demo ? (
