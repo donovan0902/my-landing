@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useEffect, useEffectEvent, useState } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import {
   Accordion,
   AccordionContent,
@@ -11,8 +11,6 @@ import {
 import { ContributionHeatmap } from "@/components/ContributionHeatmap";
 import githubIconBlack from "./assets/GitHub_Invertocat_Black.png";
 import githubIconWhite from "./assets/GitHub_Invertocat_White.png";
-import linkedInIconBlack from "./assets/InBug-Black.png";
-import linkedInIconWhite from "./assets/InBug-White.png";
 import "./App.css";
 
 type ProjectDirectory = {
@@ -159,39 +157,31 @@ const maxCurrentContextLength = Math.max(
   ...currentContextItems.map((item) => item.length),
 );
 const themeStorageKey = "theme";
-type SocialLink =
-  | {
-      label: string;
-      href: string;
-      kind: "image";
-      lightIcon: StaticImageData;
-      darkIcon: StaticImageData;
-    }
-  | {
-      label: string;
-      href: string;
-      kind: "smiley";
-    };
+type SocialLink = {
+  label: string;
+  href: string;
+};
 
 const socialLinks: SocialLink[] = [
   {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/donovanliao/",
-    kind: "image",
-    lightIcon: linkedInIconBlack,
-    darkIcon: linkedInIconWhite,
-  },
-  {
-    label: "GitHub",
+    label: "github",
     href: "https://github.com/donovan0902",
-    kind: "image",
-    lightIcon: githubIconBlack,
-    darkIcon: githubIconWhite,
   },
   {
-    label: "Climbing video",
+    label: "linkedin",
+    href: "https://www.linkedin.com/in/donovanliao/",
+  },
+  {
+    label: "music",
+    href: "https://www.instagram.com/lonni0503/",
+  },
+  {
+    label: "climb time",
+    href: "https://www.instagram.com/switchclimb/",
+  },
+  {
+    label: ":)",
     href: "https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW",
-    kind: "smiley",
   },
 ] as const;
 
@@ -545,56 +535,13 @@ function App() {
         {socialLinks.map((link) => (
           <a
             key={link.label}
-            className={`social-links__link${
-              link.kind === "smiley" ? " social-links__link--with-tooltip" : ""
-            }`}
+            className="social-links__link"
             href={link.href}
             target="_blank"
             rel="noreferrer"
             aria-label={link.label}
           >
-            {link.kind === "image" ? (
-              <Image
-                className="social-links__icon"
-                src={isDark ? link.darkIcon : link.lightIcon}
-                alt=""
-              />
-            ) : (
-              <svg
-                className="social-links__icon social-links__icon--smiley"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-                role="presentation"
-              >
-                <circle
-                  className="social-links__smiley-face"
-                  cx="10"
-                  cy="10"
-                  r="9"
-                />
-                <circle
-                  className="social-links__smiley-eye"
-                  cx="7.1"
-                  cy="8.4"
-                  r="1"
-                />
-                <circle
-                  className="social-links__smiley-eye"
-                  cx="12.9"
-                  cy="8.4"
-                  r="1"
-                />
-                <path
-                  className="social-links__smiley-mouth"
-                  d="M6.7 11.5c.78 1.68 1.9 2.52 3.3 2.52s2.52-.84 3.3-2.52"
-                />
-              </svg>
-            )}
-            {link.kind === "smiley" ? (
-              <span className="social-links__tooltip" aria-hidden="true">
-                a non-software creation
-              </span>
-            ) : null}
+            {link.label}
           </a>
         ))}
       </nav>

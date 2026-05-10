@@ -45,105 +45,46 @@
 
 .social-links {
   position: absolute;
-  bottom: clamp(1rem, 2vw, 1.5rem);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
+  right: clamp(1rem, 2vw, 1.5rem);
+  top: clamp(1rem, 2vw, 1.5rem);
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
 }
 
 .social-links__link {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  opacity: 0.8;
-  transition: opacity 160ms ease;
-}
-
-.social-links__link:hover {
-  opacity: 1;
-}
-
-.social-links__link:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 4px;
-  border-radius: 0.35rem;
-}
-
-.social-links__tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 0.45rem);
-  transform: translateX(-50%) translateY(0.15rem);
-  padding: 0.25rem 0.45rem;
-  border: 1px solid var(--border);
-  border-radius: 0.4rem;
-  background: var(--background);
+  justify-content: flex-end;
   color: var(--foreground);
-  white-space: nowrap;
-  font-family: "Figtree Variable", sans-serif;
-  font-weight: 420;
-  font-size: 0.72rem;
+  font-family: var(--font-average), serif;
+  font-size: clamp(0.82rem, 1.28vw, 0.96rem);
+  font-style: normal;
+  font-weight: 450;
   line-height: 1;
   letter-spacing: 0.01em;
-  opacity: 0;
-  pointer-events: none;
+  text-decoration: none;
+  opacity: 0.74;
   transition:
     opacity 160ms ease,
     transform 160ms ease;
 }
 
-.social-links__link--with-tooltip:hover .social-links__tooltip,
-.social-links__link--with-tooltip:focus-visible .social-links__tooltip {
+.social-links__link:hover {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-1px);
 }
 
-.social-links__icon {
-  display: block;
-  width: 1.35rem;
-  height: 1.35rem;
-  object-fit: contain;
-}
-
-.social-links__icon--smiley {
-  overflow: visible;
-  width: 1.42rem;
-}
-
-.social-links__smiley-face {
-  fill: #000000;
-}
-
-.social-links__smiley-eye {
-  fill: #f4f4f5;
-}
-
-.social-links__smiley-mouth {
-  fill: none;
-  stroke: #f4f4f5;
-  stroke-linecap: round;
-  stroke-width: 1.6;
-}
-
-.dark .social-links__smiley-face {
-  fill: #f4f4f5;
-}
-
-.dark .social-links__smiley-eye {
-  fill: #3f3f46;
-}
-
-.dark .social-links__smiley-mouth {
-  stroke: #3f3f46;
+.social-links__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 0.35rem;
 }
 
 .theme-toggle {
   position: absolute;
   top: clamp(1rem, 2vw, 1.5rem);
-  right: clamp(1rem, 2vw, 1.5rem);
+  left: clamp(1rem, 2vw, 1.5rem);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -909,12 +850,13 @@
   }
 
   .social-links {
-    bottom: 1rem;
+    top: 1rem;
+    right: 1rem;
   }
 
   .theme-toggle {
     top: 1rem;
-    right: 1rem;
+    left: 1rem;
   }
 
   .name-mark {
