@@ -149,7 +149,7 @@ const targetRowCount = 8;
 const animationIntervalMs = 120;
 const switchHoldTicks = 4;
 const currentContextItems = [
-  "Currently implementing agentic automations for embedded systems testing/simulation at Honda",
+  "Currently an embedded systems test engineer at Honda",
   "I enjoy working at the intersection of product and software",
   "I build in my free time outside of work",
 ] as const;
