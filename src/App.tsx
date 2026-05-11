@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useEffect, useEffectEvent, useState } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import {
   Accordion,
   AccordionContent,
@@ -11,18 +11,14 @@ import {
 import { ContributionHeatmap } from "@/components/ContributionHeatmap";
 import githubIconBlack from "./assets/GitHub_Invertocat_Black.png";
 import githubIconWhite from "./assets/GitHub_Invertocat_White.png";
-import linkedInIconBlack from "./assets/InBug-Black.png";
-import linkedInIconWhite from "./assets/InBug-White.png";
 import "./App.css";
 
 type ProjectDirectory = {
   name: string;
   repoHref?: string;
+  siteHref?: string;
+  siteLabel?: string;
   description: string;
-  descriptionSuffixLink?: {
-    label: string;
-    href: string;
-  };
   demo?:
     | {
         type: "link";
@@ -161,39 +157,31 @@ const maxCurrentContextLength = Math.max(
   ...currentContextItems.map((item) => item.length),
 );
 const themeStorageKey = "theme";
-type SocialLink =
-  | {
-      label: string;
-      href: string;
-      kind: "image";
-      lightIcon: StaticImageData;
-      darkIcon: StaticImageData;
-    }
-  | {
-      label: string;
-      href: string;
-      kind: "smiley";
-    };
+type SocialLink = {
+  label: string;
+  href: string;
+};
 
 const socialLinks: SocialLink[] = [
   {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/donovanliao/",
-    kind: "image",
-    lightIcon: linkedInIconBlack,
-    darkIcon: linkedInIconWhite,
-  },
-  {
-    label: "GitHub",
+    label: "github",
     href: "https://github.com/donovan0902",
-    kind: "image",
-    lightIcon: githubIconBlack,
-    darkIcon: githubIconWhite,
   },
   {
-    label: "Climbing video",
+    label: "linkedin",
+    href: "https://www.linkedin.com/in/donovanliao/",
+  },
+  {
+    label: "music",
+    href: "https://www.instagram.com/lonni0503/",
+  },
+  {
+    label: "climb time",
+    href: "https://www.instagram.com/switchclimb/",
+  },
+  {
+    label: ":)",
     href: "https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW",
-    kind: "smiley",
   },
 ] as const;
 
@@ -201,23 +189,19 @@ const projectDirectories: ProjectDirectory[] = [
   {
     name: "surveyhero",
     repoHref: "https://github.com/donovan0902/surveyhero",
+    siteHref: "https://surveyhero.vercel.app",
+    siteLabel: "Visit surveyhero.vercel.app",
     description:
-      "A survey building platform that lets respondents have a conversation with a voice agent instead of filling out a static form. Built with Next.js, Convex, and ElevenLabs. (Continuation of surveyhuman into fully functioning product). Check it out:",
-    descriptionSuffixLink: {
-      label: "surveyhero.vercel.app",
-      href: "https://surveyhero.vercel.app",
-    },
+      "A survey building platform that lets respondents have a conversation with a voice agent instead of filling out a static form. Built with Next.js, Convex, and ElevenLabs. Continuation of SurveyHuman into a fully functioning product.",
     stack: "Next.js, Convex, ElevenLabs, WorkOS",
   },
   {
     name: "garden",
     repoHref: "https://github.com/donovan0902/project-hunt",
+    siteHref: "https://projectgarden.dev",
+    siteLabel: "Visit projectgarden.dev",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and Github. 500+ users internally. Public facing demo w/mock data:",
-    descriptionSuffixLink: {
-      label: "projectgarden.dev",
-      href: "https://projectgarden.dev",
-    },
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and GitHub. 500+ internal users. The link for this project is a public-facing demo with mock data.",
     stack:
       "Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), NAT Gateway + Private Subnet (self-hosted github runner), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents",
   },
@@ -235,19 +219,19 @@ const projectDirectories: ProjectDirectory[] = [
   },
   {
     name: "qard",
+    siteHref: "https://qard.dev",
+    siteLabel: "Visit qard.dev",
     description:
       "A mobile app that recommends the best credit card for a purchase based on location and context, with a broader prototype for real-time automatic transaction routing.",
-    descriptionSuffixLink: {
-      label: "qard.dev",
-      href: "https://qard.dev",
-    },
     stack:
       "Flutter + Swift, Expressjs, GCP -> AWS Lambda, Firebase, DynamoDB, Lithic",
   },
   {
     name: "binder",
+    siteHref: "https://binderstudio.org",
+    siteLabel: "Visit binderstudio.org",
     description:
-      "An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition.",
+      "My first real app with users (80+). An agentic lesson planner that turns a single prompt into anything you need to teach your lesson: slides, worksheets, videos, and more. Built on low-level agent framework LangGraph served from a Flask app. Winner of 2025 ShowOHI/O pitch competition. Lesson generation can take a couple minutes; you can watch the demo if you don't feel like waiting.",
     demo: {
       type: "embed",
       title: "Binder demo video",
@@ -551,56 +535,13 @@ function App() {
         {socialLinks.map((link) => (
           <a
             key={link.label}
-            className={`social-links__link${
-              link.kind === "smiley" ? " social-links__link--with-tooltip" : ""
-            }`}
+            className="social-links__link"
             href={link.href}
             target="_blank"
             rel="noreferrer"
             aria-label={link.label}
           >
-            {link.kind === "image" ? (
-              <Image
-                className="social-links__icon"
-                src={isDark ? link.darkIcon : link.lightIcon}
-                alt=""
-              />
-            ) : (
-              <svg
-                className="social-links__icon social-links__icon--smiley"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-                role="presentation"
-              >
-                <circle
-                  className="social-links__smiley-face"
-                  cx="10"
-                  cy="10"
-                  r="9"
-                />
-                <circle
-                  className="social-links__smiley-eye"
-                  cx="7.1"
-                  cy="8.4"
-                  r="1"
-                />
-                <circle
-                  className="social-links__smiley-eye"
-                  cx="12.9"
-                  cy="8.4"
-                  r="1"
-                />
-                <path
-                  className="social-links__smiley-mouth"
-                  d="M6.7 11.5c.78 1.68 1.9 2.52 3.3 2.52s2.52-.84 3.3-2.52"
-                />
-              </svg>
-            )}
-            {link.kind === "smiley" ? (
-              <span className="social-links__tooltip" aria-hidden="true">
-                a non-software creation
-              </span>
-            ) : null}
+            {link.label}
           </a>
         ))}
       </nav>
@@ -722,6 +663,46 @@ function App() {
                           {project.name}
                         </span>
                       </AccordionTrigger>
+                      {project.siteHref ? (
+                        <a
+                          className="project-directory__site-link"
+                          href={project.siteHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={
+                            project.siteLabel ?? `Visit ${project.name}`
+                          }
+                        >
+                          <svg
+                            className="project-directory__site-icon"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M6 3H13V10"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M13 3L4 12"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M11 13H3V5"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </a>
+                      ) : null}
                       {project.repoHref ? (
                         <a
                           className="project-directory__repo-link"
@@ -744,19 +725,6 @@ function App() {
                           <div className="project-directory__field project-directory__field--description">
                             <dd className="project-directory__field-value project-directory__field-value--description">
                               {project.description}
-                              {project.descriptionSuffixLink ? (
-                                <>
-                                  {" "}
-                                  <a
-                                    className="project-directory__description-suffix-link"
-                                    href={project.descriptionSuffixLink.href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {project.descriptionSuffixLink.label}
-                                  </a>
-                                </>
-                              ) : null}
                             </dd>
                           </div>
                           {project.demo ? (
