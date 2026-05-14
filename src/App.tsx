@@ -201,7 +201,7 @@ const projectDirectories: ProjectDirectory[] = [
     siteHref: "https://projectgarden.dev",
     siteLabel: "Visit projectgarden.dev",
     description:
-      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and GitHub. 500+ internal users. The link for this project is a public-facing demo with mock data.",
+      "Internal tool-sharing platform for my company. Like Reddit with a sprinkle of Product Hunt and GitHub. 600+ internal users. The link for this project is a public-facing demo with mock data.",
     stack:
       "Next.js, Convex: cloud -> self-hosted with Docker + Nginx on EC2, Vercel -> Amplify, ALB + WAF (network level restriction), NAT Gateway + Private Subnet (self-hosted github runner), AWS RDS Postgres + S3, AWS SES, Clerk -> WorkOS -> Cognito + Entra ID (identity level restriction), Convex Agents",
   },
