@@ -50,6 +50,7 @@
   display: grid;
   justify-items: end;
   gap: 0.2rem;
+  z-index: 3;
 }
 
 .social-links__link {
