@@ -181,7 +181,7 @@ const socialLinks: SocialLink[] = [
   },
   {
     label: "sk8",
-    href: "https://www.youtube.com/watch?v=2oG1yMVHKR0",
+    href: "https://youtu.be/nijBB9FL_wg?si=jPSAgCAS9pT9oBK6",
   },
 ] as const;
 
