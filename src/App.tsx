@@ -180,8 +180,8 @@ const socialLinks: SocialLink[] = [
     href: "https://www.instagram.com/switchclimb/",
   },
   {
-    label: ":)",
-    href: "https://youtu.be/l4whHpf_D1Y?si=A4AvLOpYVPUHWXcW",
+    label: "sk8",
+    href: "https://www.youtube.com/watch?v=2oG1yMVHKR0",
   },
 ] as const;
 
